@@ -1,0 +1,27 @@
+# Documentación personal (no va al repositorio)
+/docs/
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# Node modules
+node_modules/
+booklo-api/node_modules/
+
+# Angular build output
+booklo-web/dist/
+booklo-web/.angular/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
