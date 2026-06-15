@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import categoryRoutes from './routes/category.routes';
 
 dotenv.config();
 
@@ -12,5 +13,7 @@ app.use(express.json());
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', project: 'booklo-api' });
 });
+
+app.use('/categories', categoryRoutes);
 
 export default app;
