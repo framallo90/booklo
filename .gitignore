@@ -25,3 +25,6 @@ Thumbs.db
 # IDE
 .vscode/settings.json
 .idea/
+
+# Imagenes subidas por el admin
+booklo-api/uploads/

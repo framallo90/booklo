@@ -18,3 +18,7 @@ INSERT IGNORE INTO categories (name) VALUES
   ('Infantil'),
   ('Historia'),
   ('Tecnología');
+
+INSERT IGNORE INTO settings (`key`, value) VALUES
+  ('usd_to_ars', '1200'),
+  ('eur_to_ars', '1300');
