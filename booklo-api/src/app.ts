@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import categoryRoutes from './routes/category.routes';
 import authRoutes from './routes/auth.routes';
+import bookRoutes from './routes/book.routes';
 
 dotenv.config();
 const app = express();
@@ -15,5 +16,6 @@ app.get('/health', (_req, res) => {
 
 app.use('/categories', categoryRoutes);
 app.use('/auth', authRoutes);
+app.use('/books', bookRoutes);
 
 export default app;
