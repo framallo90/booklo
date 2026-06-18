@@ -72,6 +72,38 @@ La API corre en `http://localhost:3000` y el frontend en `http://localhost:4200`
 
 ---
 
+## API — Endpoints disponibles
+
+### Autenticación
+| Método | Ruta | Acceso |
+|---|---|---|
+| POST | `/auth/register` | Público |
+| POST | `/auth/login` | Público |
+
+### Categorías
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/categories` | Público |
+| GET | `/categories/:id` | Público |
+| POST | `/categories` | Admin |
+| PATCH | `/categories/:id` | Admin |
+| DELETE | `/categories/:id` | Admin |
+
+### Libros
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/books` | Público |
+| GET | `/books/:id` | Público |
+| POST | `/books` | Admin |
+| PATCH | `/books/:id` | Admin |
+| DELETE | `/books/:id` | Admin |
+
+`GET /books` acepta query params: `search`, `category_id`, `product_type`, `featured`, `available`, `page`, `limit`
+
+---
+
 ## Estado del proyecto
 
-🚧 En desarrollo — Trabajo Final Integrador en curso.
+En desarrollo — Trabajo Final Integrador en curso.
+Backend: autenticación JWT, CRUD de categorías y libros completos.
+Frontend: pendiente (Días 16+).

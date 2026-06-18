@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import categoryRoutes from './routes/category.routes';
 import authRoutes from './routes/auth.routes';
 import bookRoutes from './routes/book.routes';
+import externalBookRoutes from './routes/external-book.routes';
+
 
 dotenv.config();
 const app = express();
@@ -17,5 +19,7 @@ app.get('/health', (_req, res) => {
 app.use('/categories', categoryRoutes);
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
+app.use('/external-books', externalBookRoutes);
+
 
 export default app;
