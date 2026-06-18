@@ -35,3 +35,51 @@ export const getById = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: 'Error al obtener el libro' });
   }
 };
+
+export const createBook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { title, price, product_type } = req.body;
+
+    if (!title || !price || !product_type) {
+      res.status(400).json({ message: 'Título, precio y tipo de producto son requeridos' });
+      return;
+    }
+
+    const id = await BookModel.create(req.body);
+    res.status(201).json({ id, message: 'Libro creado correctamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear el libro' });
+  }
+};
+
+export const updateBook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const updated = await BookModel.update(id, req.body);
+
+    if (!updated) {
+      res.status(404).json({ message: 'Libro no encontrado o sin cambios' });
+      return;
+    }
+
+    res.json({ message: 'Libro actualizado correctamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar el libro' });
+  }
+};
+
+export const deactivateBook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const deactivated = await BookModel.deactivate(id);
+
+    if (!deactivated) {
+      res.status(404).json({ message: 'Libro no encontrado' });
+      return;
+    }
+
+    res.json({ message: 'Libro desactivado correctamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al desactivar el libro' });
+  }
+};

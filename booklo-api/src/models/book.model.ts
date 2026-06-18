@@ -1,5 +1,7 @@
 import pool from '../config/database';
-import { RowDataPacket } from 'mysql2';
+import { RowDataPacket, ResultSetHeader, OkPacket } from 'mysql2';
+
+
 
 export interface Book {
   id: number;
@@ -87,4 +89,105 @@ export const findById = async (id: number): Promise<Book | null> => {
     [id]
   );
   return rows.length > 0 ? (rows[0] as Book) : null;
+};
+
+export interface BookData {
+  title: string;
+  subtitle?: string;
+  isbn_10?: string;
+  isbn_13?: string;
+  description?: string;
+  publisher?: string;
+  published_date?: string;
+  page_count?: number;
+  language?: string;
+  cover_url?: string;
+  price: number;
+  original_price?: number;
+  original_currency?: string;
+  stock?: number;
+  product_type: 'libro' | 'comic' | 'manga' | 'revista';
+  featured?: boolean;
+  allows_backorder?: boolean;
+  category_id?: number;
+  authors?: string[];
+}
+
+export const create = async (data: BookData): Promise<number> => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const [bookResult] = await connection.query<ResultSetHeader>(
+      `INSERT INTO books (title, subtitle, isbn_10, isbn_13, description, publisher,
+        published_date, page_count, language, cover_url, price, original_price,
+        original_currency, stock, product_type, featured, allows_backorder, category_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        data.title, data.subtitle || null, data.isbn_10 || null, data.isbn_13 || null,
+        data.description || null, data.publisher || null, data.published_date || null,
+        data.page_count || null, data.language || null, data.cover_url || null,
+        data.price, data.original_price || null, data.original_currency || 'ARS',
+        data.stock || 0, data.product_type, data.featured || false,
+        data.allows_backorder || false, data.category_id || null
+      ]
+    );
+
+    const bookId = bookResult.insertId;
+
+    if (data.authors && data.authors.length > 0) {
+      for (const authorName of data.authors) {
+        const [authorResult] = await connection.query<ResultSetHeader>(
+          'INSERT INTO authors (name) VALUES (?) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)',
+          [authorName]
+        );
+        await connection.query(
+          'INSERT IGNORE INTO book_authors (book_id, author_id) VALUES (?, ?)',
+          [bookId, authorResult.insertId]
+        );
+      }
+    }
+
+    await connection.commit();
+    return bookId;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+export const update = async (id: number, data: Partial<BookData>): Promise<boolean> => {
+  const fields: string[] = [];
+  const params: unknown[] = [];
+
+  if (data.title !== undefined) { fields.push('title = ?'); params.push(data.title); }
+  if (data.subtitle !== undefined) { fields.push('subtitle = ?'); params.push(data.subtitle); }
+  if (data.isbn_10 !== undefined) { fields.push('isbn_10 = ?'); params.push(data.isbn_10); }
+  if (data.isbn_13 !== undefined) { fields.push('isbn_13 = ?'); params.push(data.isbn_13); }
+  if (data.description !== undefined) { fields.push('description = ?'); params.push(data.description); }
+  if (data.price !== undefined) { fields.push('price = ?'); params.push(data.price); }
+  if (data.stock !== undefined) { fields.push('stock = ?'); params.push(data.stock); }
+  if (data.featured !== undefined) { fields.push('featured = ?'); params.push(data.featured); }
+  if (data.allows_backorder !== undefined) { fields.push('allows_backorder = ?'); params.push(data.allows_backorder); }
+  if (data.category_id !== undefined) { fields.push('category_id = ?'); params.push(data.category_id); }
+  if (data.cover_url !== undefined) { fields.push('cover_url = ?'); params.push(data.cover_url); }
+
+  if (fields.length === 0) return false;
+
+  params.push(id);
+  const [result] = await pool.query<ResultSetHeader>(
+    `UPDATE books SET ${fields.join(', ')} WHERE id = ?`,
+    params
+  );
+  return result.affectedRows > 0;
+};
+
+export const deactivate = async (id: number): Promise<boolean> => {
+  const [result] = await pool.query<ResultSetHeader>(
+    'UPDATE books SET status = "inactivo" WHERE id = ?',
+    [id]
+  );
+  return result.affectedRows > 0;
 };
