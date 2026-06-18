@@ -43,7 +43,7 @@ const searchOpenLibrary = async (isbn: string): Promise<ExternalBookData | null>
 const searchGoogleBooks = async (isbn: string): Promise<ExternalBookData | null> => {
   try {
     const url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
-    const response = await axios.get(url, { timeout: 10000 });
+    const response = await axios.get(url, { timeout: 20000 });
     const items = response.data.items;
 
     if (!items || items.length === 0) return null;

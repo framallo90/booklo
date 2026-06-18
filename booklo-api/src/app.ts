@@ -5,6 +5,8 @@ import categoryRoutes from './routes/category.routes';
 import authRoutes from './routes/auth.routes';
 import bookRoutes from './routes/book.routes';
 import externalBookRoutes from './routes/external-book.routes';
+import favoriteRoutes from './routes/favorite.routes';
+
 
 
 dotenv.config();
@@ -20,6 +22,7 @@ app.use('/categories', categoryRoutes);
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
 app.use('/external-books', externalBookRoutes);
+app.use('/favorites', favoriteRoutes);
 
 
 export default app;
