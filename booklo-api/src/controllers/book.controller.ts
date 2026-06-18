@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import * as BookModel from '../models/book.model';
+import * as IsbnService from '../services/isbn.service';
+
 
 export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -81,5 +83,38 @@ export const deactivateBook = async (req: Request, res: Response): Promise<void>
     res.json({ message: 'Libro desactivado correctamente' });
   } catch (error) {
     res.status(500).json({ message: 'Error al desactivar el libro' });
+  }
+};
+
+export const importBook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { isbn, price, stock, category_id, product_type } = req.body;
+
+    if (!isbn || !price || !product_type) {
+      res.status(400).json({ message: 'ISBN, precio y tipo de producto son requeridos' });
+      return;
+    }
+
+    const externalData = await IsbnService.searchByISBN(isbn);
+
+    if (!externalData) {
+      res.status(404).json({ message: 'No se encontró ningún libro con ese ISBN. Podés cargarlo manualmente con POST /books' });
+      return;
+    }
+
+    const bookData: BookModel.BookData = {
+      ...externalData,
+      price: Number(price),
+      stock: stock ? Number(stock) : 0,
+      category_id: category_id ? Number(category_id) : undefined,
+      product_type: product_type || externalData.source,
+    };
+
+    const id = await BookModel.create(bookData);
+    await BookModel.logImport(isbn, externalData.source, externalData);
+
+    res.status(201).json({ id, message: 'Libro importado correctamente', source: externalData.source });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al importar el libro' });
   }
 };

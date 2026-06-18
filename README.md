@@ -100,6 +100,11 @@ La API corre en `http://localhost:3000` y el frontend en `http://localhost:4200`
 
 `GET /books` acepta query params: `search`, `category_id`, `product_type`, `featured`, `available`, `page`, `limit`
 
+### Búsqueda por ISBN (APIs externas)
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/external-books/isbn/:isbn` | Admin |
+
 ---
 
 ## Estado del proyecto

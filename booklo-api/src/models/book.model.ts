@@ -191,3 +191,15 @@ export const deactivate = async (id: number): Promise<boolean> => {
   );
   return result.affectedRows > 0;
 };
+
+export const logImport = async (
+  isbn: string,
+  source: string,
+  rawResponse: object
+): Promise<void> => {
+  await pool.query(
+    'INSERT INTO external_imports (isbn, source, raw_response) VALUES (?, ?, ?)',
+    [isbn, source, JSON.stringify(rawResponse)]
+  );
+};
+
