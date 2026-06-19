@@ -1,0 +1,66 @@
+<div class="orders-container">
+  <h1>Mis pedidos</h1>
+
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  }
+
+  @if (!loading) {
+    @if (orders.length === 0) {
+      <div class="empty">
+        <mat-icon>receipt_long</mat-icon>
+        <p>Todavía no realizaste ningún pedido.</p>
+        <a mat-raised-button color="primary" routerLink="/catalog">Ver catálogo</a>
+      </div>
+    } @else {
+      <mat-accordion>
+        @for (order of orders; track order.id) {
+          <mat-expansion-panel (opened)="loadDetail(order.id)">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Pedido #{{ order.id }}
+              </mat-panel-title>
+              <mat-panel-description>
+                <span [class]="statusColor(order.status)" class="status-badge">
+                  {{ order.status }}
+                </span>
+                <span class="order-date">{{ order.created_at | date:'dd/MM/yyyy' }}</span>
+                <strong class="order-total">${{ order.total }}</strong>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            @if (loadingDetail[order.id]) {
+              <div class="detail-spinner">
+                <mat-spinner diameter="32"></mat-spinner>
+              </div>
+            }
+
+            @if (details[order.id]) {
+              <div class="order-items">
+                @for (item of details[order.id].items; track item.book_id) {
+                  <div class="order-item">
+                    <img [src]="item.cover_url || 'assets/no-cover.png'" [alt]="item.title" />
+                    <div class="item-info">
+                      <p class="item-title">{{ item.title }}</p>
+                      <p class="item-meta">
+                        {{ item.quantity }} x ${{ item.unit_price }}
+                      </p>
+                    </div>
+                    <p class="item-subtotal">${{ item.subtotal }}</p>
+                  </div>
+                  <mat-divider />
+                }
+                <div class="order-footer">
+                  <span>Total del pedido</span>
+                  <strong>${{ details[order.id].total }}</strong>
+                </div>
+              </div>
+            }
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    }
+  }
+</div>
