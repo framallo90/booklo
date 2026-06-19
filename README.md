@@ -105,10 +105,31 @@ La API corre en `http://localhost:3000` y el frontend en `http://localhost:4200`
 |---|---|---|
 | GET | `/external-books/isbn/:isbn` | Admin |
 
+### Importación por ISBN
+| Método | Ruta | Acceso |
+|---|---|---|
+| POST | `/books/import` | Admin |
+
+### Favoritos
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/favorites` | Usuario autenticado |
+| POST | `/favorites/:bookId` | Usuario autenticado |
+| DELETE | `/favorites/:bookId` | Usuario autenticado |
+
+### Carrito
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/cart` | Usuario autenticado |
+| POST | `/cart` | Usuario autenticado |
+| PATCH | `/cart/:bookId` | Usuario autenticado |
+| DELETE | `/cart/:bookId` | Usuario autenticado |
+| DELETE | `/cart` | Usuario autenticado |
+
 ---
 
 ## Estado del proyecto
 
 En desarrollo — Trabajo Final Integrador en curso.
-Backend: autenticación JWT, CRUD de categorías y libros completos.
+Backend: autenticación JWT, CRUD de categorías y libros, integración ISBN (Open Library + Google Books), favoritos y carrito completos.
 Frontend: pendiente (Días 16+).

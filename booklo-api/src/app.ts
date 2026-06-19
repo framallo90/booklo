@@ -6,6 +6,8 @@ import authRoutes from './routes/auth.routes';
 import bookRoutes from './routes/book.routes';
 import externalBookRoutes from './routes/external-book.routes';
 import favoriteRoutes from './routes/favorite.routes';
+import cartRoutes from './routes/cart.routes';
+
 
 
 
@@ -23,6 +25,8 @@ app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
 app.use('/external-books', externalBookRoutes);
 app.use('/favorites', favoriteRoutes);
+app.use('/cart', cartRoutes);
+
 
 
 export default app;
