@@ -1,0 +1,37 @@
+<mat-toolbar color="primary">
+  <a routerLink="/" class="brand">Booklo</a>
+
+  <span class="spacer"></span>
+
+  <a mat-button routerLink="/catalog" routerLinkActive="active-link">
+    <mat-icon>menu_book</mat-icon> Catálogo
+  </a>
+
+  @if (auth.user$ | async; as user) {
+    <a mat-button routerLink="/favorites" routerLinkActive="active-link">
+      <mat-icon>favorite_border</mat-icon> Favoritos
+    </a>
+
+    <a mat-button routerLink="/cart" routerLinkActive="active-link">
+      <mat-icon>shopping_cart</mat-icon> Carrito
+    </a>
+
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon> {{ user.name }}
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      @if (user.role_id === 1) {
+        <a mat-menu-item routerLink="/admin">
+          <mat-icon>admin_panel_settings</mat-icon> Panel admin
+        </a>
+      }
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon> Cerrar sesión
+      </button>
+    </mat-menu>
+  } @else {
+    <a mat-button routerLink="/login">Iniciar sesión</a>
+    <a mat-raised-button color="accent" routerLink="/register">Registrarse</a>
+  }
+</mat-toolbar>

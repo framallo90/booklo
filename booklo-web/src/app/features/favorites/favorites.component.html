@@ -1,0 +1,39 @@
+<div class="favorites-container">
+  <h1>Mis favoritos</h1>
+
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  }
+
+  @if (!loading) {
+    @if (favorites.length === 0) {
+      <div class="empty">
+        <mat-icon>favorite_border</mat-icon>
+        <p>No tenés libros favoritos todavía.</p>
+        <a mat-raised-button color="primary" routerLink="/catalog">Ver catálogo</a>
+      </div>
+    } @else {
+      <div class="grid">
+        @for (fav of favorites; track fav.book_id) {
+          <div class="card">
+            <a [routerLink]="['/books', fav.book_id]">
+              <img [src]="fav.cover_url || 'assets/no-cover.png'" [alt]="fav.title" />
+            </a>
+            <div class="card-body">
+              <p class="title">{{ fav.title }}</p>
+              <p class="price">${{ fav.price }}</p>
+            </div>
+            <div class="card-footer">
+              <a mat-stroked-button [routerLink]="['/books', fav.book_id]">Ver detalle</a>
+              <button mat-icon-button color="warn" (click)="remove(fav.book_id)" title="Quitar de favoritos">
+                <mat-icon>favorite</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

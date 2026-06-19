@@ -1,0 +1,30 @@
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1976d2;
+  color: white;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+  margin-right: 8px;
+}
+
+.spacer { flex: 1; }
+
+.active-link {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+a[mat-button], a[mat-raised-button], button[mat-button] {
+  color: white;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
