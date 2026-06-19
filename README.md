@@ -140,10 +140,16 @@ La API corre en `http://localhost:3000` y el frontend en `http://localhost:4200`
 
 `PATCH /orders/:id/status` acepta: `pendiente` · `confirmado` · `enviado` · `entregado` · `cancelado`
 
+### Dashboard
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/dashboard` | Admin |
+
+Devuelve en una sola llamada: totales generales, pedidos por estado, libros con stock bajo, últimos 5 pedidos y top 5 productos más vendidos.
+
 ---
 
 ## Estado del proyecto
 
-En desarrollo — Trabajo Final Integrador en curso.
-Backend: autenticación JWT, CRUD de categorías y libros, integración ISBN (Open Library + Google Books), favoritos, carrito y pedidos completos.
-Frontend: pendiente (Días 16+).
+Backend completo. Módulos implementados: autenticación JWT, categorías, libros (con importación por ISBN), favoritos, carrito, pedidos y dashboard de métricas.
+Frontend: en desarrollo (Angular 17+).
