@@ -1,0 +1,49 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-content>
+      <h1>Iniciar sesión</h1>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+          @if (form.get('email')?.errors?.['required'] && form.get('email')?.touched) {
+            <mat-error>El email es requerido</mat-error>
+          }
+          @if (form.get('email')?.errors?.['email'] && form.get('email')?.touched) {
+            <mat-error>Ingresá un email válido</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" />
+            <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (form.get('password')?.errors?.['required'] && form.get('password')?.touched) {
+                <mat-error>La contraseña es requerida</mat-error>
+            }
+            @if (form.get('password')?.errors?.['minlength'] && form.get('password')?.touched) {
+                <mat-error>Mínimo 6 caracteres</mat-error>
+            }
+        </mat-form-field>
+
+        @if (error) {
+          <p class="error">{{ error }}</p>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid || loading"
+        >
+          {{ loading ? 'Ingresando...' : 'Ingresar' }}
+        </button>
+      </form>
+
+      <p class="link">¿No tenés cuenta? <a routerLink="/register">Registrate</a></p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,57 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-content>
+      <h1>Crear cuenta</h1>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="name" />
+          @if (form.get('name')?.errors?.['required'] && form.get('name')?.touched) {
+            <mat-error>El nombre es requerido</mat-error>
+          }
+          @if (form.get('name')?.errors?.['minlength'] && form.get('name')?.touched) {
+            <mat-error>Mínimo 2 caracteres</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+          @if (form.get('email')?.errors?.['required'] && form.get('email')?.touched) {
+            <mat-error>El email es requerido</mat-error>
+          }
+          @if (form.get('email')?.errors?.['email'] && form.get('email')?.touched) {
+            <mat-error>Ingresá un email válido</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input matInput type="password" formControlName="password" />
+          @if (form.get('password')?.errors?.['required'] && form.get('password')?.touched) {
+            <mat-error>La contraseña es requerida</mat-error>
+          }
+          @if (form.get('password')?.errors?.['minlength'] && form.get('password')?.touched) {
+            <mat-error>Mínimo 6 caracteres</mat-error>
+          }
+        </mat-form-field>
+
+        @if (error) {
+          <p class="error">{{ error }}</p>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid || loading"
+        >
+          {{ loading ? 'Registrando...' : 'Crear cuenta' }}
+        </button>
+      </form>
+
+      <p class="link">¿Ya tenés cuenta? <a routerLink="/login">Iniciá sesión</a></p>
+    </mat-card-content>
+  </mat-card>
+</div>
