@@ -1,0 +1,68 @@
+<div class="catalog-container">
+  <h1>Catálogo</h1>
+
+  <div class="filters">
+    <mat-form-field appearance="outline">
+      <mat-label>Buscar</mat-label>
+      <input
+        matInput
+        [ngModel]="filters.search"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Título, autor, ISBN..."
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Categoría</mat-label>
+      <mat-select [(ngModel)]="filters.category_id" (ngModelChange)="onFilterChange()">
+        <mat-option [value]="undefined">Todas</mat-option>
+        @for (cat of categories; track cat.id) {
+          <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Tipo</mat-label>
+      <mat-select [(ngModel)]="filters.product_type" (ngModelChange)="onFilterChange()">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="libro">Libros</mat-option>
+        <mat-option value="comic">Comics</mat-option>
+        <mat-option value="manga">Manga</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-button (click)="clearFilters()">Limpiar filtros</button>
+  </div>
+
+  <p class="total">{{ total }} resultado{{ total !== 1 ? 's' : '' }}</p>
+
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  }
+
+  @if (!loading) {
+    <div class="books-grid">
+      @for (book of books; track book.id) {
+        <mat-card class="book-card" [routerLink]="['/books', book.id]">
+          <img
+            mat-card-image
+            [src]="book.cover_url || 'assets/no-cover.png'"
+            [alt]="book.title"
+          />
+          <mat-card-content>
+            <h3>{{ book.title }}</h3>
+            <p class="authors">{{ book.authors }}</p>
+            <p class="price">${{ book.price }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      @if (books.length === 0) {
+        <p class="no-results">No se encontraron resultados.</p>
+      }
+    </div>
+  }
+</div>

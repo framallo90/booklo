@@ -37,7 +37,14 @@ export interface BookFilters {
   limit?: number;
 }
 
-export const findAll = async (filters: BookFilters = {}): Promise<Book[]> => {
+export interface BooksPage {
+  data: Book[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => {
   const conditions: string[] = ['b.status = "activo"'];
   const params: unknown[] = [];
 
@@ -68,13 +75,28 @@ export const findAll = async (filters: BookFilters = {}): Promise<Book[]> => {
   const page = filters.page || 1;
   const limit = filters.limit || 20;
   const offset = (page - 1) * limit;
-
   const where = conditions.join(' AND ');
-  const sql = `SELECT b.* FROM books b WHERE ${where} ORDER BY b.created_at DESC LIMIT ? OFFSET ?`;
-  params.push(limit, offset);
 
-  const [rows] = await pool.query<RowDataPacket[]>(sql, params);
-  return rows as Book[];
+  const countSql = `SELECT COUNT(*) AS total FROM books b WHERE ${where}`;
+  const [countRows] = await pool.query<RowDataPacket[]>(countSql, params);
+  const total = (countRows[0] as any).total;
+
+  const dataSql = `
+    SELECT b.id, b.title, b.cover_url, b.price, b.stock, b.product_type,
+           c.name AS category_name,
+           GROUP_CONCAT(a.name SEPARATOR ', ') AS authors
+    FROM books b
+    LEFT JOIN categories c ON b.category_id = c.id
+    LEFT JOIN book_authors ba ON b.id = ba.book_id
+    LEFT JOIN authors a ON ba.author_id = a.id
+    WHERE ${where}
+    GROUP BY b.id
+    ORDER BY b.created_at DESC
+    LIMIT ? OFFSET ?
+  `;
+  const [rows] = await pool.query<RowDataPacket[]>(dataSql, [...params, limit, offset]);
+
+  return { data: rows as Book[], total, page, limit };
 };
 
 export const findById = async (id: number): Promise<Book | null> => {
