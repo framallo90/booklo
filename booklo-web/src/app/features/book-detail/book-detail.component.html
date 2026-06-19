@@ -1,0 +1,121 @@
+<div class="detail-container">
+  <button mat-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon> Volver al catálogo
+  </button>
+
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  }
+
+  @if (notFound) {
+    <div class="not-found">
+      <p>No se encontró el libro.</p>
+      <button mat-raised-button (click)="goBack()">Volver</button>
+    </div>
+  }
+
+  @if (!loading && !notFound && book) {
+    <div class="book-layout">
+      <div class="cover-section">
+        <img
+          [src]="book.cover_url || 'assets/no-cover.png'"
+          [alt]="book.title"
+          class="cover"
+        />
+      </div>
+
+      <div class="info-section">
+        <p class="product-type">{{ book.product_type | uppercase }}</p>
+        <h1>{{ book.title }}</h1>
+        @if (book.subtitle) {
+          <h2>{{ book.subtitle }}</h2>
+        }
+        @if (book.authors) {
+          <p class="authors">{{ book.authors }}</p>
+        }
+
+        <mat-divider />
+
+        <p class="price">${{ book.price }}</p>
+
+        @if (book.stock > 0) {
+          <p class="stock in-stock">Stock disponible: {{ book.stock }}</p>
+        } @else if (book.allows_backorder) {
+          <p class="stock backorder">Disponible por encargo</p>
+        } @else {
+          <p class="stock no-stock">Sin stock</p>
+        }
+
+        @if (isLoggedIn) {
+          <div class="actions">
+            <div class="quantity-row">
+              <button mat-icon-button (click)="quantity = quantity > 1 ? quantity - 1 : 1">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="quantity">{{ quantity }}</span>
+              <button mat-icon-button (click)="quantity = quantity + 1">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="!inStock || addingToCart"
+              (click)="addToCart()"
+            >
+              <mat-icon>shopping_cart</mat-icon>
+              {{ addingToCart ? 'Agregando...' : 'Agregar al carrito' }}
+            </button>
+
+            <button mat-stroked-button (click)="toggleFavorite()">
+              <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+              {{ isFavorite ? 'En favoritos' : 'Agregar a favoritos' }}
+            </button>
+          </div>
+
+          @if (message) {
+            <p class="feedback">{{ message }}</p>
+          }
+        } @else {
+          <p class="login-hint">
+            <a routerLink="/login">Iniciá sesión</a> para comprar o guardar favoritos.
+          </p>
+        }
+
+        <mat-divider />
+
+        <div class="metadata">
+          @if (book.publisher) {
+            <p><strong>Editorial:</strong> {{ book.publisher }}</p>
+          }
+          @if (book.published_date) {
+            <p><strong>Publicación:</strong> {{ book.published_date }}</p>
+          }
+          @if (book.page_count) {
+            <p><strong>Páginas:</strong> {{ book.page_count }}</p>
+          }
+          @if (book.isbn_13) {
+            <p><strong>ISBN-13:</strong> {{ book.isbn_13 }}</p>
+          }
+          @if (book.isbn_10) {
+            <p><strong>ISBN-10:</strong> {{ book.isbn_10 }}</p>
+          }
+          @if (book.category_name) {
+            <p><strong>Categoría:</strong> {{ book.category_name }}</p>
+          }
+        </div>
+
+        @if (book.description) {
+          <mat-divider />
+          <div class="description">
+            <h3>Descripción</h3>
+            <p>{{ book.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -28,6 +28,25 @@ export interface BookFilters {
   limit?: number;
 }
 
+export interface BookDetail {
+  id: number;
+  title: string;
+  subtitle: string | null;
+  authors: string | null;
+  description: string | null;
+  isbn_10: string | null;
+  isbn_13: string | null;
+  publisher: string | null;
+  published_date: string | null;
+  page_count: number | null;
+  cover_url: string | null;
+  price: number;
+  stock: number;
+  product_type: string;
+  allows_backorder: boolean;
+  category_name: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class BookService {
   private http = inject(HttpClient);
@@ -42,4 +61,9 @@ export class BookService {
     if (filters.limit) params = params.set('limit', filters.limit);
     return this.http.get<BooksResponse>(`${this.API}/books`, { params });
   }
+
+  getById(id: number): Observable<BookDetail> {
+    return this.http.get<BookDetail>(`${this.API}/books/${id}`);
+  }
+
 }
