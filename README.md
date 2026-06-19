@@ -126,10 +126,24 @@ La API corre en `http://localhost:3000` y el frontend en `http://localhost:4200`
 | DELETE | `/cart/:bookId` | Usuario autenticado |
 | DELETE | `/cart` | Usuario autenticado |
 
+`POST /cart` acepta body: `{ "bookId": 2, "quantity": 1 }`
+
+### Pedidos
+| Método | Ruta | Acceso |
+|---|---|---|
+| GET | `/orders` | Usuario autenticado |
+| GET | `/orders/:id` | Usuario autenticado |
+| POST | `/orders` | Usuario autenticado |
+| PATCH | `/orders/:id/status` | Admin |
+
+`POST /orders` acepta body opcional: `{ "payment_method": "efectivo", "notes": "..." }`. Toma los ítems del carrito activo, registra movimientos de stock y vacía el carrito automáticamente.
+
+`PATCH /orders/:id/status` acepta: `pendiente` · `confirmado` · `enviado` · `entregado` · `cancelado`
+
 ---
 
 ## Estado del proyecto
 
 En desarrollo — Trabajo Final Integrador en curso.
-Backend: autenticación JWT, CRUD de categorías y libros, integración ISBN (Open Library + Google Books), favoritos y carrito completos.
+Backend: autenticación JWT, CRUD de categorías y libros, integración ISBN (Open Library + Google Books), favoritos, carrito y pedidos completos.
 Frontend: pendiente (Días 16+).
