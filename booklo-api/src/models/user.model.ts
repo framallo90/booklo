@@ -19,6 +19,14 @@ export const findByEmail = async (email: string): Promise<User | null> => {
   return rows.length > 0 ? (rows[0] as User) : null;
 };
 
+export const findById = async (id: number): Promise<User | null> => {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    'SELECT * FROM users WHERE id = ? AND is_active = TRUE',
+    [id]
+  );
+  return rows.length > 0 ? (rows[0] as User) : null;
+};
+
 export const create = async (
   name: string,
   email: string,
@@ -30,4 +38,25 @@ export const create = async (
     [name, email, hashedPassword, role_id]
   );
   return result.insertId;
+};
+
+export const updateProfile = async (
+  id: number,
+  name: string,
+  email: string
+): Promise<void> => {
+  await pool.query(
+    'UPDATE users SET name = ?, email = ? WHERE id = ?',
+    [name, email, id]
+  );
+};
+
+export const updatePassword = async (
+  id: number,
+  hashedPassword: string
+): Promise<void> => {
+  await pool.query(
+    'UPDATE users SET password = ? WHERE id = ?',
+    [hashedPassword, id]
+  );
 };

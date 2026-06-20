@@ -21,15 +21,17 @@
     </button>
 
     <mat-menu #userMenu="matMenu">
-      @if (user.role_id === 1) {
-        <a mat-menu-item routerLink="/admin">
-          <mat-icon>admin_panel_settings</mat-icon> Panel admin
-        </a>
-      }
-        <a mat-menu-item routerLink="/orders">
-          <mat-icon>receipt_long</mat-icon> Mis pedidos
-        </a>
-    
+    @if (user.role_id === 1) {
+      <a mat-menu-item routerLink="/admin">
+        <mat-icon>admin_panel_settings</mat-icon> Panel admin
+      </a>
+    }
+    <a mat-menu-item routerLink="/profile">
+        <mat-icon>person</mat-icon> Mi perfil
+      </a>
+      <a mat-menu-item routerLink="/orders">
+        <mat-icon>receipt_long</mat-icon> Mis pedidos
+      </a>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon> Cerrar sesión
       </button>

@@ -1,0 +1,47 @@
+.profile-container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+h1 { margin-bottom: 0; }
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+h2 { margin: 0 0 8px; }
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.message {
+  margin: 0;
+  font-size: 14px;
+  color: #2e7d32;
+}
+
+mat-divider {
+  margin: 8px 0;
+}

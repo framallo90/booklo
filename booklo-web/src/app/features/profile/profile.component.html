@@ -1,0 +1,79 @@
+<div class="profile-container">
+  <h1>Mi perfil</h1>
+
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  }
+
+  @if (!loading) {
+    <section class="card">
+      <h2>Datos personales</h2>
+
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="name" />
+          @if (profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
+            <mat-error>Mínimo 2 caracteres</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+          @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+            <mat-error>Email inválido</mat-error>
+          }
+        </mat-form-field>
+
+        @if (profileMessage) {
+          <p class="message">{{ profileMessage }}</p>
+        }
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid || savingProfile">
+          {{ savingProfile ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </form>
+    </section>
+
+    <mat-divider />
+
+    <section class="card">
+      <h2>Cambiar contraseña</h2>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="savePassword()">
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña actual</mat-label>
+          <input matInput [type]="showCurrent ? 'text' : 'password'" formControlName="currentPassword" />
+          <button mat-icon-button matSuffix type="button" (click)="showCurrent = !showCurrent">
+            <mat-icon>{{ showCurrent ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched) {
+            <mat-error>Ingresá tu contraseña actual</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nueva contraseña</mat-label>
+          <input matInput [type]="showNew ? 'text' : 'password'" formControlName="newPassword" />
+          <button mat-icon-button matSuffix type="button" (click)="showNew = !showNew">
+            <mat-icon>{{ showNew ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+            <mat-error>Mínimo 6 caracteres</mat-error>
+          }
+        </mat-form-field>
+
+        @if (passwordMessage) {
+          <p class="message">{{ passwordMessage }}</p>
+        }
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="passwordForm.invalid || savingPassword">
+          {{ savingPassword ? 'Guardando...' : 'Cambiar contraseña' }}
+        </button>
+      </form>
+    </section>
+  }
+</div>
