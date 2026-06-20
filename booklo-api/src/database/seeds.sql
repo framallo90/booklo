@@ -1,3 +1,4 @@
+SET NAMES utf8mb4;
 USE booklo_db;
 
 INSERT IGNORE INTO roles (name) VALUES ('admin'), ('client');

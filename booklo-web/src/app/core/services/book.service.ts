@@ -66,4 +66,11 @@ export class BookService {
     return this.http.get<BookDetail>(`${this.API}/books/${id}`);
   }
 
+  update(id: number, data: Partial<{ price: number; stock: number; category_id: number }>) {
+    return this.http.patch(`${this.API}/books/${id}`, data);
+  }
+
+  deactivate(id: number) {
+    return this.http.delete(`${this.API}/books/${id}`);
+  }
 }

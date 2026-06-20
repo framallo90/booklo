@@ -1,0 +1,56 @@
+<div>
+  <h2>Categorías</h2>
+
+  <form [formGroup]="addForm" (ngSubmit)="add()" class="add-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nueva categoría</mat-label>
+      <input matInput formControlName="name" placeholder="Ej: Novela gráfica" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" [disabled]="addForm.invalid">
+      Agregar
+    </button>
+  </form>
+
+  @if (loading) {
+    <mat-spinner diameter="40" />
+  } @else {
+    <table mat-table [dataSource]="categories" class="mat-elevation-z1">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let cat">
+          @if (editingId === cat.id) {
+            <mat-form-field appearance="outline" class="edit-field">
+              <input matInput [formControl]="editForm.controls.name" />
+            </mat-form-field>
+          } @else {
+            {{ cat.name }}
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let cat">
+          @if (editingId === cat.id) {
+            <button mat-icon-button color="primary" (click)="saveEdit()" title="Guardar">
+              <mat-icon>check</mat-icon>
+            </button>
+            <button mat-icon-button (click)="cancelEdit()" title="Cancelar">
+              <mat-icon>close</mat-icon>
+            </button>
+          } @else {
+            <button mat-icon-button (click)="startEdit(cat)" title="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="confirmDelete(cat)" title="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  }
+</div>
