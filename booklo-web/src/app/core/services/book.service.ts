@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Book {
   id: number;
@@ -50,7 +51,7 @@ export interface BookDetail {
 @Injectable({ providedIn: 'root' })
 export class BookService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:3000';
+  private readonly API = environment.apiUrl;
 
   getBooks(filters: BookFilters = {}): Observable<BooksResponse> {
     let params = new HttpParams();
@@ -66,11 +67,19 @@ export class BookService {
     return this.http.get<BookDetail>(`${this.API}/books/${id}`);
   }
 
-  update(id: number, data: Partial<{ price: number; stock: number; category_id: number }>) {
+  update(id: number, data: Partial<{ price: number; stock: number; category_id: number; cover_url: string }>) {
     return this.http.patch(`${this.API}/books/${id}`, data);
   }
 
   deactivate(id: number) {
     return this.http.delete(`${this.API}/books/${id}`);
+  }
+
+  create(data: { title: string; authors: string; price: number; stock: number; category_id: number; product_type: string; cover_url?: string }): Observable<{ id: number }> {
+    return this.http.post<{ id: number }>(`${this.API}/books`, data);
+  }
+
+  importByIsbn(data: { isbn: string; price: number; stock: number; category_id: number; product_type: string }): Observable<{ id: number }> {
+    return this.http.post<{ id: number }>(`${this.API}/books/import`, data);
   }
 }

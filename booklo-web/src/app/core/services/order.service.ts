@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface OrderItem {
   book_id: number;
@@ -27,7 +28,7 @@ export interface OrderDetail extends Order {
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:3000';
+  private readonly API = environment.apiUrl;
 
   createOrder(paymentMethod?: string, notes?: string) {
     return this.http.post(`${this.API}/orders`, { payment_method: paymentMethod, notes });

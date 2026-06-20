@@ -1,0 +1,76 @@
+<div>
+  <h2>Importar libro por ISBN</h2>
+
+  <mat-card class="search-card">
+    <mat-card-content>
+      <form [formGroup]="isbnForm" (ngSubmit)="search()" class="isbn-form">
+        <mat-form-field appearance="outline" class="isbn-field">
+          <mat-label>ISBN (10 o 13 dígitos)</mat-label>
+          <input matInput formControlName="isbn" placeholder="Ej: 9780439708180" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="isbnForm.invalid || searching">
+          @if (searching) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Buscar
+          }
+        </button>
+      </form>
+      @if (searchError) {
+        <p class="error">{{ searchError }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (preview) {
+    <div class="preview-layout">
+      <mat-card class="preview-card">
+        <mat-card-content class="preview-content">
+          <img [src]="preview.cover_url || 'assets/no-cover.png'" [alt]="preview.title" class="cover" />
+          <div class="preview-info">
+            <h3>{{ preview.title }}</h3>
+            @if (preview.subtitle) { <p class="subtitle">{{ preview.subtitle }}</p> }
+            <p><strong>Autores:</strong> {{ preview.authors.join(', ') }}</p>
+            @if (preview.publisher) { <p><strong>Editorial:</strong> {{ preview.publisher }}</p> }
+            @if (preview.published_date) { <p><strong>Año:</strong> {{ preview.published_date }}</p> }
+            @if (preview.page_count) { <p><strong>Páginas:</strong> {{ preview.page_count }}</p> }
+            @if (preview.description) { <p class="description">{{ preview.description }}</p> }
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="import-card">
+        <mat-card-title>Datos del negocio</mat-card-title>
+        <mat-card-content>
+          <form [formGroup]="importForm" (ngSubmit)="save()" class="import-form">
+            <mat-form-field appearance="outline">
+              <mat-label>Precio ($)</mat-label>
+              <input matInput type="text" formControlName="price" (input)="onPriceInput($event)" placeholder="Ej: 1.500,50" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Stock inicial</mat-label>
+              <input matInput type="number" formControlName="stock" min="0" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Categoría</mat-label>
+              <mat-select formControlName="category_id">
+                @for (cat of categories; track cat.id) {
+                  <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button mat-raised-button color="accent" type="submit" [disabled]="importForm.invalid || saving">
+              @if (saving) { <mat-spinner diameter="20" /> } @else { Importar libro }
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  @if (saveMessage) {
+    <p [class.save-error]="saveError" [class.save-message]="!saveError" style="margin-top: 16px">
+      {{ saveMessage }}
+    </p>
+  }
+</div>

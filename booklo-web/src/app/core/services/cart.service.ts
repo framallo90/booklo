@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface CartItem {
   book_id: number;
@@ -18,7 +19,7 @@ export interface Cart {
 @Injectable({ providedIn: 'root' })
 export class CartService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:3000';
+  private readonly API = environment.apiUrl;
 
   getCart(): Observable<Cart> {
     return this.http.get<CartItem[]>(`${this.API}/cart`).pipe(

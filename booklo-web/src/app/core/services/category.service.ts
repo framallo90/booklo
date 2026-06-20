@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Category {
   id: number;
@@ -11,7 +12,7 @@ export interface Category {
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:3000';
+  private readonly API = environment.apiUrl;
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.API}/categories`);
@@ -27,5 +28,8 @@ export class CategoryService {
 
   delete(id: number) {
     return this.http.delete(`${this.API}/categories/${id}`);
+  }
+  getAll(): Observable<Category[]> {
+    return this.getCategories();
   }
 }

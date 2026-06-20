@@ -1,0 +1,59 @@
+h2 { margin-bottom: 24px; }
+
+.search-card { margin-bottom: 24px; }
+
+.isbn-form {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.isbn-field { width: 320px; }
+
+.error { color: #c62828; margin-top: 8px; }
+
+.preview-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.preview-card { flex: 1; }
+
+.preview-content {
+  display: flex;
+  gap: 20px;
+}
+
+.cover {
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.preview-info h3 { margin: 0 0 8px; }
+
+.subtitle { color: #666; font-style: italic; margin: 0 0 8px; }
+
+.description {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+  margin-top: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.import-card { width: 320px; flex-shrink: 0; }
+
+.import-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.save-message { color: #2e7d32; margin-top: 8px; }
+
+.save-error { color: #c62828; margin-top: 8px; }

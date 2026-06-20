@@ -8,7 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
-
+import { CategoryService, Category } from '../../../core/services/category.service';
+import { AdminBookEditDialogComponent } from './admin-book-edit-dialog.component';
+import { AdminBookCreateDialogComponent } from './admin-book-create-dialog.component';
 import { BookService, Book } from '../../../core/services/book.service';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
 
@@ -23,6 +25,8 @@ import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    AdminBookEditDialogComponent,
+    AdminBookCreateDialogComponent,
   ],
   templateUrl: './admin-books.component.html',
   styleUrl: './admin-books.component.css',
@@ -31,6 +35,8 @@ export class AdminBooksComponent implements OnInit {
   private bookService = inject(BookService);
   private dialog = inject(MatDialog);
 
+  private categoryService = inject(CategoryService);
+  categories: Category[] = [];
   books: Book[] = [];
   total = 0;
   loading = true;
@@ -43,6 +49,7 @@ export class AdminBooksComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
+    this.categoryService.getAll().subscribe({ next: (cats) => (this.categories = cats) });
     this.searchSubject.pipe(debounceTime(400), distinctUntilChanged()).subscribe(() => {
       this.page = 1;
       this.load();
@@ -80,6 +87,37 @@ export class AdminBooksComponent implements OnInit {
     });
     ref.afterClosed().subscribe((confirmed) => {
       if (confirmed) this.bookService.deactivate(book.id).subscribe({ next: () => this.load() });
+    });
+  }
+
+  editBook(book: Book): void {
+    const ref = this.dialog.open(AdminBookEditDialogComponent, {
+      data: { book, categories: this.categories },
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (!result) return;
+     const update: any = { price: result.price, stock: result.stock };
+      if (result.category_id) update.category_id = result.category_id;
+      if (result.cover_url !== undefined) update.cover_url = result.cover_url;
+      this.bookService.update(book.id, update).subscribe({ next: () => this.load() });
+    });
+  }
+
+  createBook(): void {
+    const ref = this.dialog.open(AdminBookCreateDialogComponent, {
+      data: this.categories,
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.bookService.create({
+        title: result.title,
+        authors: result.authors || '',
+        cover_url: result.cover_url || undefined,
+        price: Number(result.price),
+        stock: Number(result.stock),
+        category_id: Number(result.category_id),
+        product_type: result.product_type,
+      }).subscribe({ next: () => this.load() });
     });
   }
 }
