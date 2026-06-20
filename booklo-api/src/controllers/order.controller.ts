@@ -22,8 +22,15 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
 
 export const getOrders = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const orders = await OrderModel.findByUser(req.user!.id);
-    res.json(orders);
+    const isAdmin = req.user!.role_id === 1;
+    if (isAdmin) {
+      const status = req.query.status as string | undefined;
+      const orders = await OrderModel.findAll(status);
+      res.json(orders);
+    } else {
+      const orders = await OrderModel.findByUser(req.user!.id);
+      res.json(orders);
+    }
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los pedidos' });
   }
@@ -31,7 +38,11 @@ export const getOrders = async (req: AuthRequest, res: Response): Promise<void> 
 
 export const getOrderById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const order = await OrderModel.findById(Number(req.params.id), req.user!.id);
+    const isAdmin = req.user!.role_id === 1;
+    const orderId = Number(req.params.id);
+    const order = isAdmin
+      ? await OrderModel.findByIdAdmin(orderId)
+      : await OrderModel.findById(orderId, req.user!.id);
     if (!order) { res.status(404).json({ message: 'Pedido no encontrado' }); return; }
     res.json(order);
   } catch (error) {

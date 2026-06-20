@@ -1,0 +1,99 @@
+<div>
+  <h2>Pedidos</h2>
+
+  <div class="toolbar">
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrar por estado</mat-label>
+      <mat-select [(ngModel)]="filterStatus" (ngModelChange)="onFilterChange()">
+        @for (s of statuses; track s.value) {
+          <mat-option [value]="s.value">{{ s.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <span class="total">{{ orders.length }} pedidos</span>
+  </div>
+
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner diameter="48" />
+    </div>
+  } @else {
+    <table mat-table [dataSource]="orders" class="mat-elevation-z1">
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let order">{{ order.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="user_email">
+        <th mat-header-cell *matHeaderCellDef>Cliente</th>
+        <td mat-cell *matCellDef="let order">{{ order.user_email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>Total</th>
+        <td mat-cell *matCellDef="let order">{{ order.total | currency:'ARS':'symbol':'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let order">
+          <mat-select [value]="order.status" (valueChange)="changeStatus(order, $event)" class="status-select">
+            @for (s of statuses.slice(1); track s.value) {
+              <mat-option [value]="s.value">{{ s.label }}</mat-option>
+            }
+          </mat-select>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="created_at">
+        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <td mat-cell *matCellDef="let order">{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let order">
+          <button mat-icon-button (click)="toggleDetail(order)" [title]="expandedOrder?.id === order.id ? 'Cerrar' : 'Ver detalle'">
+            <mat-icon>{{ expandedOrder?.id === order.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.expanded-row]="expandedOrder?.id === row.id"></tr>
+
+    </table>
+
+    @if (expandedOrder) {
+      <div class="detail-panel mat-elevation-z1">
+        @if (loadingDetail) {
+          <mat-spinner diameter="32" />
+        } @else {
+          <h4>Detalle del pedido #{{ expandedOrder.id }} — {{ expandedOrder.user_email }}</h4>
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Libro</th>
+                <th>Cantidad</th>
+                <th>Precio unitario</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of expandedOrder.items; track item.book_id) {
+                <tr>
+                  <td>{{ item.title }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.unit_price | currency:'ARS':'symbol':'1.2-2' }}</td>
+                  <td>{{ item.subtotal | currency:'ARS':'symbol':'1.2-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <p class="detail-total"><strong>Total: {{ expandedOrder.total | currency:'ARS':'symbol':'1.2-2' }}</strong></p>
+        }
+      </div>
+    }
+  }
+</div>

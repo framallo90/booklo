@@ -90,3 +90,34 @@ export const updateStatus = async (
 ): Promise<void> => {
   await pool.query('UPDATE orders SET status = ? WHERE id = ?', [status, orderId]);
 };
+
+export const findAll = async (status?: string): Promise<(Order & { user_email: string })[]> => {
+  let query = `
+    SELECT o.*, u.email as user_email
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
+  `;
+  const params: any[] = [];
+  if (status) {
+    query += ' WHERE o.status = ?';
+    params.push(status);
+  }
+  query += ' ORDER BY o.created_at DESC';
+  const [rows] = await pool.query<RowDataPacket[]>(query, params);
+  return rows as (Order & { user_email: string })[];
+};
+
+export const findByIdAdmin = async (orderId: number): Promise<(Order & { user_email: string; items: any[] }) | null> => {
+  const [orders] = await pool.query<RowDataPacket[]>(
+    'SELECT o.*, u.email as user_email FROM orders o JOIN users u ON o.user_id = u.id WHERE o.id = ?',
+    [orderId]
+  );
+  if (orders.length === 0) return null;
+  const [items] = await pool.query<RowDataPacket[]>(
+    `SELECT oi.*, b.title, b.cover_url FROM order_items oi
+     JOIN books b ON oi.book_id = b.id
+     WHERE oi.order_id = ?`,
+    [orderId]
+  );
+  return { ...(orders[0] as Order & { user_email: string }), items: items as any[] };
+};

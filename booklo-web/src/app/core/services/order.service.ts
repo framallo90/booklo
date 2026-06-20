@@ -12,13 +12,19 @@ export interface OrderItem {
   subtotal: number;
 }
 
+export type OrderStatus = 'pendiente' | 'confirmado' | 'enviado' | 'entregado' | 'cancelado';
+
 export interface Order {
   id: number;
-  status: 'pendiente' | 'confirmado' | 'enviado' | 'entregado' | 'cancelado';
+  status: OrderStatus;
   total: number;
   payment_method: string | null;
   notes: string | null;
   created_at: string;
+}
+
+export interface AdminOrder extends Order {
+  user_email: string;
 }
 
 export interface OrderDetail extends Order {
@@ -40,5 +46,14 @@ export class OrderService {
 
   getOrderById(id: number): Observable<OrderDetail> {
     return this.http.get<OrderDetail>(`${this.API}/orders/${id}`);
+  }
+
+  getAdminOrders(status?: string): Observable<AdminOrder[]> {
+    const params = status ? `?status=${status}` : '';
+    return this.http.get<AdminOrder[]>(`${this.API}/orders${params}`);
+  }
+
+  updateStatus(id: number, status: OrderStatus): Observable<void> {
+    return this.http.patch<void>(`${this.API}/orders/${id}/status`, { status });
   }
 }
