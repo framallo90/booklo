@@ -60,3 +60,12 @@ h3 { margin: 0 0 12px; font-size: 16px; color: #333; }
 .status-enviado { color: #7b1fa2; }
 .status-entregado { color: #388e3c; }
 .status-cancelado { color: #c62828; }
+
+@media (max-width: 1024px) {
+  .cards-row { grid-template-columns: repeat(2, 1fr); }
+  .tables-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .cards-row { grid-template-columns: 1fr; }
+}

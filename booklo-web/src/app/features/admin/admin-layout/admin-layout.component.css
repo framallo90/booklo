@@ -30,3 +30,8 @@
   padding: 24px;
   overflow: auto;
 }
+
+@media (max-width: 768px) {
+  .admin-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; }
+}
