@@ -1,0 +1,62 @@
+h2 { margin-bottom: 24px; }
+h3 { margin: 0 0 12px; font-size: 16px; color: #333; }
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.cards-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card mat-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.stat-card mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #1976d2;
+  margin-bottom: 8px;
+}
+
+.stat-card.accent mat-icon { color: #388e3c; }
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 4px 0;
+  color: #222;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+.tables-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.table-section table { width: 100%; }
+
+.low-stock { color: #c62828; font-weight: 600; }
+
+.status-pendiente { color: #f57c00; }
+.status-confirmado { color: #1976d2; }
+.status-enviado { color: #7b1fa2; }
+.status-entregado { color: #388e3c; }
+.status-cancelado { color: #c62828; }
