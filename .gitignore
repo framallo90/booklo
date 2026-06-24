@@ -6,6 +6,9 @@
 .env.local
 .env.production
 
+# Environment de producción (se genera en el servidor)
+booklo-web/src/environments/environment.ts
+
 # Node modules
 node_modules/
 booklo-api/node_modules/
