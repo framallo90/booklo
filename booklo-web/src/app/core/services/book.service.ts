@@ -75,7 +75,7 @@ export class BookService {
     return this.http.delete(`${this.API}/books/${id}`);
   }
 
-  create(data: { title: string; authors: string; price: number; stock: number; category_id: number; product_type: string; cover_url?: string }): Observable<{ id: number }> {
+  create(data: { title: string; authors: string[]; price: number; stock: number; category_id: number; product_type: string; cover_url?: string }): Observable<{ id: number }> {
     return this.http.post<{ id: number }>(`${this.API}/books`, data);
   }
 

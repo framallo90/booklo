@@ -109,9 +109,12 @@ export class AdminBooksComponent implements OnInit {
     });
     ref.afterClosed().subscribe((result) => {
       if (!result) return;
+      const authors = result.authors
+        ? result.authors.split(',').map((a: string) => a.trim()).filter(Boolean)
+        : [];
       this.bookService.create({
         title: result.title,
-        authors: result.authors || '',
+        authors,
         cover_url: result.cover_url || undefined,
         price: Number(result.price),
         stock: Number(result.stock),
