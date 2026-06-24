@@ -151,5 +151,23 @@ Devuelve en una sola llamada: totales generales, pedidos por estado, libros con 
 
 ## Estado del proyecto
 
-Backend completo. Módulos implementados: autenticación JWT, categorías, libros (con importación por ISBN), favoritos, carrito, pedidos y dashboard de métricas.
-Frontend: en desarrollo (Angular 17+).
+Sistema completo y funcional. Backend y frontend implementados al 100%.
+
+**Frontend (Angular 17+)**
+- Catálogo público con búsqueda, filtros por categoría/tipo y paginación
+- Detalle de libro con carrito y favoritos
+- Login, registro y perfil de usuario con cambio de contraseña
+- Carrito persistente y checkout con confirmación de pedido
+- Historial de pedidos con detalle expandible
+- Panel administrativo completo: libros, categorías, pedidos y dashboard
+- Importación de libros por ISBN con previsualización
+- Alta manual de libros sin ISBN
+- Interceptor JWT automático + interceptor de errores HTTP con Snackbar
+- Responsive: colapso de grids en viewports menores a 1024px / 768px
+
+**Backend (Node.js + Express + TypeScript)**
+- API REST completa con autenticación JWT y control de acceso por roles
+- CRUD completo de libros, categorías, usuarios, favoritos, carrito y pedidos
+- Transacciones SQL para pedidos (stock, movimientos, carrito)
+- Integración con Open Library y Google Books por ISBN
+- Dashboard con métricas en tiempo real (`Promise.all` para queries paralelas)
