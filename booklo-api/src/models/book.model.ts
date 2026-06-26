@@ -20,6 +20,12 @@ export interface Book {
   stock: number;
   cover_url: string;
   product_type: 'libro' | 'comic' | 'manga' | 'revista';
+  condition: 'nuevo' | 'usado';
+  binding: string;
+  collection: string;
+  weight_grams: number;
+  country: string;
+  dimensions: string;
   featured: boolean;
   allows_backorder: boolean;
   status: 'activo' | 'inactivo';
@@ -31,6 +37,9 @@ export interface BookFilters {
   search?: string;
   category_id?: number;
   product_type?: string;
+  condition?: 'nuevo' | 'usado';
+  publisher?: string;
+  language?: string;
   available?: boolean;
   featured?: boolean;
   page?: number;
@@ -63,6 +72,21 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
     params.push(filters.product_type);
   }
 
+  if (filters.condition) {
+    conditions.push('b.condition = ?');
+    params.push(filters.condition);
+  }
+
+  if (filters.publisher) {
+    conditions.push('b.publisher LIKE ?');
+    params.push(`%${filters.publisher}%`);
+  }
+
+  if (filters.language) {
+    conditions.push('b.language = ?');
+    params.push(filters.language);
+  }
+
   if (filters.featured !== undefined) {
     conditions.push('b.featured = ?');
     params.push(filters.featured);
@@ -82,7 +106,8 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
   const total = (countRows[0] as any).total;
 
   const dataSql = `
-    SELECT b.id, b.title, b.cover_url, b.price, b.stock, b.product_type,
+    SELECT b.id, b.title, b.cover_url, b.price, b.original_price,
+           b.stock, b.product_type, b.condition, b.publisher, b.published_date,
            c.name AS category_name,
            GROUP_CONCAT(a.name SEPARATOR ', ') AS authors
     FROM books b
@@ -129,6 +154,12 @@ export interface BookData {
   original_currency?: string;
   stock?: number;
   product_type: 'libro' | 'comic' | 'manga' | 'revista';
+  condition?: 'nuevo' | 'usado';
+  binding?: string;
+  collection?: string;
+  weight_grams?: number;
+  country?: string;
+  dimensions?: string;
   featured?: boolean;
   allows_backorder?: boolean;
   category_id?: number;
@@ -143,15 +174,18 @@ export const create = async (data: BookData): Promise<number> => {
     const [bookResult] = await connection.query<ResultSetHeader>(
       `INSERT INTO books (title, subtitle, isbn_10, isbn_13, description, publisher,
         published_date, page_count, language, cover_url, price, original_price,
-        original_currency, stock, product_type, featured, allows_backorder, category_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        original_currency, stock, product_type, \`condition\`, binding, collection,
+        weight_grams, country, dimensions, featured, allows_backorder, category_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         data.title, data.subtitle || null, data.isbn_10 || null, data.isbn_13 || null,
         data.description || null, data.publisher || null, data.published_date || null,
         data.page_count || null, data.language || null, data.cover_url || null,
         data.price, data.original_price || null, data.original_currency || 'ARS',
-        data.stock || 0, data.product_type, data.featured || false,
-        data.allows_backorder || false, data.category_id || null
+        data.stock || 0, data.product_type, data.condition || 'nuevo',
+        data.binding || null, data.collection || null, data.weight_grams || null,
+        data.country || null, data.dimensions || null,
+        data.featured || false, data.allows_backorder || false, data.category_id || null
       ]
     );
 
@@ -194,7 +228,16 @@ export const update = async (id: number, data: Partial<BookData>): Promise<boole
   if (data.featured !== undefined) { fields.push('featured = ?'); params.push(data.featured); }
   if (data.allows_backorder !== undefined) { fields.push('allows_backorder = ?'); params.push(data.allows_backorder); }
   if (data.category_id !== undefined) { fields.push('category_id = ?'); params.push(data.category_id); }
-  if (data.cover_url !== undefined) { fields.push('cover_url = ?'); params.push(data.cover_url); }
+  if (data.cover_url !== undefined)      { fields.push('cover_url = ?');      params.push(data.cover_url); }
+  if (data.condition !== undefined)      { fields.push('`condition` = ?');    params.push(data.condition); }
+  if (data.binding !== undefined)        { fields.push('binding = ?');        params.push(data.binding); }
+  if (data.collection !== undefined)     { fields.push('collection = ?');     params.push(data.collection); }
+  if (data.weight_grams !== undefined)   { fields.push('weight_grams = ?');   params.push(data.weight_grams); }
+  if (data.country !== undefined)        { fields.push('country = ?');        params.push(data.country); }
+  if (data.dimensions !== undefined)     { fields.push('dimensions = ?');     params.push(data.dimensions); }
+  if (data.original_price !== undefined) { fields.push('original_price = ?'); params.push(data.original_price); }
+  if (data.publisher !== undefined)      { fields.push('publisher = ?');      params.push(data.publisher); }
+  if (data.language !== undefined)       { fields.push('language = ?');       params.push(data.language); }
 
   if (fields.length === 0) return false;
 
