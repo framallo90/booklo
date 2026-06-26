@@ -31,6 +31,25 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-form-field appearance="outline">
+      <mat-label>Ordenar por</mat-label>
+      <mat-select [(ngModel)]="filters.sort" (ngModelChange)="onFilterChange()">
+        <mat-option value="">Más nuevos</mat-option>
+        <mat-option value="price_asc">Menor precio</mat-option>
+        <mat-option value="price_desc">Mayor precio</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="price-field">
+      <mat-label>Precio mín.</mat-label>
+      <input matInput type="number" [(ngModel)]="filters.min_price" (ngModelChange)="onFilterChange()" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="price-field">
+      <mat-label>Precio máx.</mat-label>
+      <input matInput type="number" [(ngModel)]="filters.max_price" (ngModelChange)="onFilterChange()" min="0" />
+    </mat-form-field>
+
     <button mat-button (click)="clearFilters()">Limpiar filtros</button>
   </div>
 
@@ -56,6 +75,9 @@
               <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
                 {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
               </span>
+              @if (book.hot_sale) {
+                <span class="badge badge--hot-sale">HOT SALE</span>
+              }
               @if (book.stock === 0) {
                 <span class="badge badge--sin-stock">SIN STOCK</span>
               } @else if (book.stock <= 5) {
@@ -63,6 +85,9 @@
               }
               @if (book.original_price && book.original_price > book.price) {
                 <span class="badge badge--oferta">{{ ((1 - book.price / book.original_price) * 100) | number:'1.0-0' }}% OFF</span>
+              }
+              @if (book.created_at && isNuevoIngreso(book.created_at)) {
+                <span class="badge badge--nuevo-ingreso">NUEVO INGRESO</span>
               }
             </div>
             <h3>{{ book.title }}</h3>

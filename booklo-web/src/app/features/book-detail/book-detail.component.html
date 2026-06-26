@@ -23,6 +23,9 @@
           [src]="book.cover_url || 'assets/no-cover.png'"
           [alt]="book.title"
           class="cover"
+          [class.cover--zoomable]="!!book.cover_url"
+          (click)="openCoverZoom()"
+          title="Ver imagen ampliada"
         />
       </div>
 
@@ -32,11 +35,17 @@
           <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
             {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
           </span>
+          @if (book.hot_sale) {
+            <span class="badge badge--hot-sale">HOT SALE</span>
+          }
           @if (book.stock === 0 && !book.allows_backorder) {
             <span class="badge badge--sin-stock">SIN STOCK</span>
           }
           @if (book.original_price && book.original_price > book.price) {
             <span class="badge badge--oferta">{{ ((1 - book.price / book.original_price) * 100) | number:'1.0-0' }}% OFF</span>
+          }
+          @if (isNuevoIngreso()) {
+            <span class="badge badge--nuevo-ingreso">NUEVO INGRESO</span>
           }
         </div>
         <h1>{{ book.title }}</h1>

@@ -18,7 +18,12 @@ h1 {
 
 .filters mat-form-field {
   flex: 1;
-  min-width: 200px;
+  min-width: 180px;
+}
+
+.price-field {
+  max-width: 140px;
+  min-width: 120px !important;
 }
 
 .total {
@@ -69,11 +74,13 @@ h1 {
   border-radius: 3px;
 }
 
-.badge--nuevo      { background: #e8f5e9; color: #2e7d32; }
-.badge--usado      { background: #fff3e0; color: #e65100; }
-.badge--sin-stock  { background: #c62828; color: #fff; }
-.badge--ultimas    { background: #e65100; color: #fff; }
-.badge--oferta     { background: #d32f2f; color: #fff; }
+.badge--nuevo         { background: #e8f5e9; color: #2e7d32; }
+.badge--usado         { background: #fff3e0; color: #e65100; }
+.badge--sin-stock     { background: #c62828; color: #fff; }
+.badge--ultimas       { background: #e65100; color: #fff; }
+.badge--oferta        { background: #d32f2f; color: #fff; }
+.badge--hot-sale      { background: #b71c1c; color: #fff; }
+.badge--nuevo-ingreso { background: #c8e6c9; color: #1b5e20; }
 
 .cuotas {
   font-size: 12px;

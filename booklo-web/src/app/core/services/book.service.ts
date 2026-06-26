@@ -16,6 +16,8 @@ export interface Book {
   publisher: string | null;
   language: string | null;
   category_name: string | null;
+  hot_sale: boolean;
+  created_at: string;
 }
 
 export interface BooksResponse {
@@ -30,6 +32,9 @@ export interface BookFilters {
   category_id?: number;
   product_type?: string;
   condition?: string;
+  min_price?: number;
+  max_price?: number;
+  sort?: string;
   page?: number;
   limit?: number;
 }
@@ -59,6 +64,8 @@ export interface BookDetail {
   dimensions: string | null;
   allows_backorder: boolean;
   category_name: string | null;
+  hot_sale: boolean;
+  created_at: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -72,6 +79,9 @@ export class BookService {
     if (filters.category_id) params = params.set('category_id', filters.category_id);
     if (filters.product_type) params = params.set('product_type', filters.product_type);
     if (filters.condition) params = params.set('condition', filters.condition);
+    if (filters.min_price !== undefined) params = params.set('min_price', filters.min_price);
+    if (filters.max_price !== undefined) params = params.set('max_price', filters.max_price);
+    if (filters.sort) params = params.set('sort', filters.sort);
     if (filters.page) params = params.set('page', filters.page);
     if (filters.limit) params = params.set('limit', filters.limit);
     return this.http.get<BooksResponse>(`${this.API}/books`, { params });

@@ -9,8 +9,12 @@ export const getAll = async (req: Request, res: Response): Promise<void> => {
       search: req.query.search as string,
       category_id: req.query.category_id ? Number(req.query.category_id) : undefined,
       product_type: req.query.product_type as string,
+      condition: req.query.condition as 'nuevo' | 'usado' | undefined,
       featured: req.query.featured === 'true' ? true : undefined,
       available: req.query.available === 'true' ? true : undefined,
+      min_price: req.query.min_price ? Number(req.query.min_price) : undefined,
+      max_price: req.query.max_price ? Number(req.query.max_price) : undefined,
+      sort: req.query.sort as BookModel.BookFilters['sort'],
       page: req.query.page ? Number(req.query.page) : 1,
       limit: req.query.limit ? Number(req.query.limit) : 20,
     };

@@ -42,6 +42,9 @@ export interface BookFilters {
   language?: string;
   available?: boolean;
   featured?: boolean;
+  min_price?: number;
+  max_price?: number;
+  sort?: 'price_asc' | 'price_desc' | 'newest';
   page?: number;
   limit?: number;
 }
@@ -96,6 +99,20 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
     conditions.push('(b.stock > 0 OR b.allows_backorder = TRUE)');
   }
 
+  if (filters.min_price !== undefined) {
+    conditions.push('b.price >= ?');
+    params.push(filters.min_price);
+  }
+
+  if (filters.max_price !== undefined) {
+    conditions.push('b.price <= ?');
+    params.push(filters.max_price);
+  }
+
+  let orderBy = 'b.created_at DESC';
+  if (filters.sort === 'price_asc') orderBy = 'b.price ASC';
+  else if (filters.sort === 'price_desc') orderBy = 'b.price DESC';
+
   const page = filters.page || 1;
   const limit = filters.limit || 20;
   const offset = (page - 1) * limit;
@@ -108,6 +125,7 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
   const dataSql = `
     SELECT b.id, b.title, b.cover_url, b.price, b.original_price,
            b.stock, b.product_type, b.condition, b.publisher, b.published_date, b.language,
+           b.hot_sale, b.created_at,
            c.name AS category_name,
            GROUP_CONCAT(a.name SEPARATOR ', ') AS authors
     FROM books b
@@ -116,7 +134,7 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
     LEFT JOIN authors a ON ba.author_id = a.id
     WHERE ${where}
     GROUP BY b.id
-    ORDER BY b.created_at DESC
+    ORDER BY ${orderBy}
     LIMIT ? OFFSET ?
   `;
   const [rows] = await pool.query<RowDataPacket[]>(dataSql, [...params, limit, offset]);

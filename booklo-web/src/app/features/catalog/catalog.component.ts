@@ -47,6 +47,9 @@ export class CatalogComponent implements OnInit {
     search: '',
     category_id: undefined,
     condition: '',
+    sort: '',
+    min_price: undefined,
+    max_price: undefined,
     page: 1,
     limit: 24,
   };
@@ -103,7 +106,16 @@ export class CatalogComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.filters = { search: '', category_id: undefined, condition: '', page: 1, limit: 24 };
+    this.filters = {
+      search: '', category_id: undefined, condition: '',
+      sort: '', min_price: undefined, max_price: undefined,
+      page: 1, limit: 24,
+    };
     this.loadBooks();
+  }
+
+  isNuevoIngreso(createdAt: string): boolean {
+    const days30 = 30 * 24 * 60 * 60 * 1000;
+    return (Date.now() - new Date(createdAt).getTime()) < days30;
   }
 }
