@@ -10,6 +10,7 @@ import favoriteRoutes from './routes/favorite.routes';
 import cartRoutes from './routes/cart.routes';
 import orderRoutes from './routes/order.routes';
 import dashboardRoutes from './routes/dashboard.routes';
+import homeRoutes from './routes/home.routes';
 
 
 
@@ -33,6 +34,7 @@ app.use('/favorites', favoriteRoutes);
 app.use('/cart', cartRoutes);
 app.use('/orders', orderRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/home', homeRoutes);
 
 
 

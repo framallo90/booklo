@@ -1,0 +1,114 @@
+.home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #1565c0 0%, #1976d2 60%, #42a5f5 100%);
+  border-radius: 12px;
+  margin: 24px 0 48px;
+  padding: 64px 48px;
+  color: white;
+}
+
+.hero-content h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+.hero-content p {
+  font-size: 18px;
+  margin: 0 0 32px;
+  opacity: 0.9;
+}
+
+.hero-content a[mat-raised-button] {
+  background: white;
+  color: #1976d2;
+  font-size: 16px;
+  padding: 8px 32px;
+  font-weight: 600;
+}
+
+/* Secciones */
+.section {
+  margin-bottom: 48px;
+}
+
+.section h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 20px;
+  color: #1a1a1a;
+}
+
+/* Carrusel scroll snap */
+.carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 12px;
+}
+
+.carousel::-webkit-scrollbar {
+  height: 4px;
+}
+
+.carousel::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 2px;
+}
+
+.carousel::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 2px;
+}
+
+/* Card del carrusel */
+.carousel-card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 180px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  transition: box-shadow 0.2s;
+}
+
+.carousel-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.carousel-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 8px 10px 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  min-height: 36px;
+}
+
+.card-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1976d2;
+  margin: 0 10px 10px;
+}

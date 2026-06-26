@@ -1,0 +1,60 @@
+<div class="home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Tu próxima lectura te está esperando</h1>
+      <p>Libros nuevos y usados con envío a todo el país.</p>
+      <a mat-raised-button color="primary" routerLink="/catalog">Ver catálogo</a>
+    </div>
+  </section>
+
+  <!-- Destacados -->
+  @if (featured.length > 0) {
+    <section class="section">
+      <h2>Destacados</h2>
+      <div class="carousel">
+        @for (book of featured; track book.id) {
+          <a class="carousel-card" [routerLink]="['/books', book.id]">
+            <img [src]="book.cover_url || 'assets/no-cover.png'" [alt]="book.title" />
+            <p class="card-title">{{ book.title }}</p>
+            <p class="card-price">{{ book.price | currency:'ARS':'symbol':'1.0-0' }}</p>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Novedades -->
+  @if (novedades.length > 0) {
+    <section class="section">
+      <h2>Novedades</h2>
+      <div class="carousel">
+        @for (book of novedades; track book.id) {
+          <a class="carousel-card" [routerLink]="['/books', book.id]">
+            <img [src]="book.cover_url || 'assets/no-cover.png'" [alt]="book.title" />
+            <p class="card-title">{{ book.title }}</p>
+            <p class="card-price">{{ book.price | currency:'ARS':'symbol':'1.0-0' }}</p>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Más vendidos -->
+  @if (topVentas.length > 0) {
+    <section class="section">
+      <h2>Más vendidos</h2>
+      <div class="carousel">
+        @for (book of topVentas; track book.id) {
+          <a class="carousel-card" [routerLink]="['/books', book.id]">
+            <img [src]="book.cover_url || 'assets/no-cover.png'" [alt]="book.title" />
+            <p class="card-title">{{ book.title }}</p>
+            <p class="card-price">{{ book.price | currency:'ARS':'symbol':'1.0-0' }}</p>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+</div>
