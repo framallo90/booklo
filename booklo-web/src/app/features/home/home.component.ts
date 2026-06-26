@@ -25,10 +25,11 @@ export class HomeComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('novedadesEl') novedadesEl?: ElementRef<HTMLElement>;
   @ViewChild('topVentasEl') topVentasEl?: ElementRef<HTMLElement>;
 
-  private timers     = new Map<string, ReturnType<typeof setInterval>>();
+  private timers      = new Map<string, ReturnType<typeof setInterval>>();
   private autoStarted = new Set<string>();
   private readonly CARD_WIDTH = 196;
-  private readonly AUTO_DELAY = 3000;
+  private readonly AUTO_DELAY = 3500;
+  private readonly ANIM_MS    = 700;
 
   ngOnInit(): void {
     this.homeService.getFeatured().subscribe({  next: (data) => this.featured  = data });
@@ -52,9 +53,24 @@ export class HomeComponent implements OnInit, AfterViewChecked, OnDestroy {
   private startInterval(key: string, el: HTMLElement): void {
     const timer = setInterval(() => {
       const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 10;
-      el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + this.CARD_WIDTH, behavior: 'smooth' });
+      this.animateScroll(el, atEnd ? 0 : el.scrollLeft + this.CARD_WIDTH, this.ANIM_MS);
     }, this.AUTO_DELAY);
     this.timers.set(key, timer);
+  }
+
+  private animateScroll(el: HTMLElement, target: number, duration: number): void {
+    const from  = el.scrollLeft;
+    const delta = target - from;
+    if (delta === 0) return;
+    const t0 = performance.now();
+
+    const step = (now: number) => {
+      const p    = Math.min((now - t0) / duration, 1);
+      const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // easeInOutCubic
+      el.scrollLeft = from + delta * ease;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   }
 
   pauseScroll(key: string): void {
@@ -70,7 +86,11 @@ export class HomeComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   scrollCarousel(el: HTMLElement, direction: number): void {
-    el.scrollBy({ left: direction * this.CARD_WIDTH, behavior: 'smooth' });
+    const target = Math.max(0, Math.min(
+      el.scrollLeft + direction * this.CARD_WIDTH,
+      el.scrollWidth - el.clientWidth,
+    ));
+    this.animateScroll(el, target, 450);
   }
 
   ngOnDestroy(): void {
