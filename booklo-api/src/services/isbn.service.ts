@@ -9,6 +9,9 @@ export interface ExternalBookData {
   publisher?: string;
   published_date?: string;
   page_count?: number;
+  language?: string;
+  binding?: string;
+  collection?: string;
   cover_url?: string;
   authors: string[];
   source: 'openlibrary' | 'googlebooks';
@@ -90,6 +93,7 @@ const searchGoogleBooks = async (isbn: string): Promise<ExternalBookData | null>
       publisher: info.publisher,
       published_date: info.publishedDate,
       page_count: info.pageCount,
+      language: info.language ?? undefined,
       cover_url: info.imageLinks?.thumbnail?.replace('http://', 'https://'),
       authors: info.authors || [],
       source: 'googlebooks',
@@ -119,6 +123,8 @@ const searchOpenLibrary = async (isbn: string): Promise<ExternalBookData | null>
         publisher: data.publishers?.[0]?.name,
         published_date: data.publish_date,
         page_count: data.number_of_pages,
+        binding: data.physical_format ?? undefined,
+        collection: data.series?.[0]?.name ?? data.series?.[0] ?? undefined,
         cover_url: data.cover?.large || data.cover?.medium,
         authors: data.authors?.map((a: any) => a.name) || [],
         source: 'openlibrary',
@@ -160,6 +166,8 @@ const searchOpenLibrary = async (isbn: string): Promise<ExternalBookData | null>
       publisher: data.publishers?.[0],
       published_date: data.publish_date,
       page_count: data.number_of_pages,
+      binding: data.physical_format ?? undefined,
+      collection: data.series?.[0]?.name ?? data.series?.[0] ?? undefined,
       cover_url: data.covers?.[0]
         ? `https://covers.openlibrary.org/b/id/${data.covers[0]}-L.jpg`
         : undefined,

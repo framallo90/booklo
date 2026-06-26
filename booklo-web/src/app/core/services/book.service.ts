@@ -9,8 +9,12 @@ export interface Book {
   authors: string;
   cover_url: string | null;
   price: number;
+  original_price: number | null;
   stock: number;
   product_type: string;
+  condition: string;
+  publisher: string | null;
+  language: string | null;
   category_name: string | null;
 }
 
@@ -25,6 +29,7 @@ export interface BookFilters {
   search?: string;
   category_id?: number;
   product_type?: string;
+  condition?: string;
   page?: number;
   limit?: number;
 }
@@ -42,8 +47,16 @@ export interface BookDetail {
   page_count: number | null;
   cover_url: string | null;
   price: number;
+  original_price: number | null;
   stock: number;
   product_type: string;
+  condition: string;
+  language: string | null;
+  binding: string | null;
+  collection: string | null;
+  weight_grams: number | null;
+  country: string | null;
+  dimensions: string | null;
   allows_backorder: boolean;
   category_name: string | null;
 }
@@ -58,6 +71,7 @@ export class BookService {
     if (filters.search) params = params.set('search', filters.search);
     if (filters.category_id) params = params.set('category_id', filters.category_id);
     if (filters.product_type) params = params.set('product_type', filters.product_type);
+    if (filters.condition) params = params.set('condition', filters.condition);
     if (filters.page) params = params.set('page', filters.page);
     if (filters.limit) params = params.set('limit', filters.limit);
     return this.http.get<BooksResponse>(`${this.API}/books`, { params });

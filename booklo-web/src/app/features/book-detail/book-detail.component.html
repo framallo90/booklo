@@ -28,6 +28,9 @@
 
       <div class="info-section">
         <p class="product-type">{{ book.product_type | uppercase }}</p>
+        <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
+          {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
+        </span>
         <h1>{{ book.title }}</h1>
         @if (book.subtitle) {
           <h2>{{ book.subtitle }}</h2>
@@ -38,7 +41,15 @@
 
         <mat-divider />
 
-        <p class="price">${{ book.price }}</p>
+        <div class="price-block">
+          @if (book.original_price && book.original_price > book.price) {
+            <span class="price-original">{{ book.original_price | currency:'ARS':'symbol':'1.0-0' }}</span>
+            <span class="price-discount">{{ book.price | currency:'ARS':'symbol':'1.0-0' }}</span>
+            <span class="price-saving">Ahorrás {{ ((1 - book.price / book.original_price) * 100) | number:'1.0-0' }}%</span>
+          } @else {
+            <span class="price">{{ book.price | currency:'ARS':'symbol':'1.0-0' }}</span>
+          }
+        </div>
 
         @if (book.stock > 0) {
           <p class="stock in-stock">Stock disponible: {{ book.stock }}</p>
@@ -91,11 +102,29 @@
           @if (book.publisher) {
             <p><strong>Editorial:</strong> {{ book.publisher }}</p>
           }
-          @if (book.published_date) {
-            <p><strong>Publicación:</strong> {{ book.published_date }}</p>
+          @if (book.language) {
+            <p><strong>Idioma:</strong> {{ book.language }}</p>
+          }
+          @if (book.binding) {
+            <p><strong>Encuadernación:</strong> {{ book.binding }}</p>
           }
           @if (book.page_count) {
             <p><strong>Páginas:</strong> {{ book.page_count }}</p>
+          }
+          @if (book.published_date) {
+            <p><strong>Publicación:</strong> {{ book.published_date }}</p>
+          }
+          @if (book.collection) {
+            <p><strong>Colección:</strong> {{ book.collection }}</p>
+          }
+          @if (book.dimensions) {
+            <p><strong>Dimensiones:</strong> {{ book.dimensions }}</p>
+          }
+          @if (book.weight_grams) {
+            <p><strong>Peso:</strong> {{ book.weight_grams }} g</p>
+          }
+          @if (book.country) {
+            <p><strong>País:</strong> {{ book.country }}</p>
           }
           @if (book.isbn_13) {
             <p><strong>ISBN-13:</strong> {{ book.isbn_13 }}</p>

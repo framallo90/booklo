@@ -107,7 +107,7 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
 
   const dataSql = `
     SELECT b.id, b.title, b.cover_url, b.price, b.original_price,
-           b.stock, b.product_type, b.condition, b.publisher, b.published_date,
+           b.stock, b.product_type, b.condition, b.publisher, b.published_date, b.language,
            c.name AS category_name,
            GROUP_CONCAT(a.name SEPARATOR ', ') AS authors
     FROM books b

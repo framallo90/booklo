@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 import { BookService, Book, BookFilters } from '../../core/services/book.service';
 import { CategoryService, Category } from '../../core/services/category.service';
@@ -19,12 +21,14 @@ import { CategoryService, Category } from '../../core/services/category.service'
   imports: [
     FormsModule,
     RouterLink,
+    CurrencyPipe,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatPaginatorModule,
   ],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.css',
@@ -39,11 +43,11 @@ export class CatalogComponent implements OnInit {
   total = 0;
 
   filters: BookFilters = {
-  search: '',
-  category_id: undefined,
-  product_type: '',
-  page: 1,
-  limit: 12,
+    search: '',
+    category_id: undefined,
+    condition: '',
+    page: 1,
+    limit: 24,
   };
 
   private searchSubject = new Subject<string>();
@@ -90,8 +94,15 @@ export class CatalogComponent implements OnInit {
     this.loadBooks();
   }
 
+  onPageChange(event: PageEvent): void {
+    this.filters.page = event.pageIndex + 1;
+    this.filters.limit = event.pageSize;
+    this.loadBooks();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   clearFilters(): void {
-    this.filters = { search: '', category_id: undefined, product_type: '', page: 1, limit: 12 };
+    this.filters = { search: '', category_id: undefined, condition: '', page: 1, limit: 24 };
     this.loadBooks();
   }
 }

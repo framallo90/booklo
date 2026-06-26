@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import { UpperCasePipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe, UpperCasePipe } from '@angular/common';
 
 
 import { BookService, BookDetail } from '../../core/services/book.service';
@@ -17,6 +17,8 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [
     RouterLink,
+    CurrencyPipe,
+    DecimalPipe,
     UpperCasePipe,
     MatButtonModule,
     MatIconModule,

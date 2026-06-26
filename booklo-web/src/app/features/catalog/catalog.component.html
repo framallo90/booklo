@@ -23,12 +23,11 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Tipo</mat-label>
-      <mat-select [(ngModel)]="filters.product_type" (ngModelChange)="onFilterChange()">
+      <mat-label>Condición</mat-label>
+      <mat-select [(ngModel)]="filters.condition" (ngModelChange)="onFilterChange()">
         <mat-option value="">Todos</mat-option>
-        <mat-option value="libro">Libros</mat-option>
-        <mat-option value="comic">Comics</mat-option>
-        <mat-option value="manga">Manga</mat-option>
+        <mat-option value="nuevo">Nuevo</mat-option>
+        <mat-option value="usado">Usado</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -53,9 +52,15 @@
             [alt]="book.title"
           />
           <mat-card-content>
+            <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
+              {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
+            </span>
             <h3>{{ book.title }}</h3>
+            @if (book.publisher) {
+              <p class="publisher">{{ book.publisher }}</p>
+            }
             <p class="authors">{{ book.authors }}</p>
-            <p class="price">${{ book.price }}</p>
+            <p class="price">{{ book.price | currency:'ARS':'symbol':'1.0-0' }}</p>
           </mat-card-content>
         </mat-card>
       }
@@ -64,5 +69,14 @@
         <p class="no-results">No se encontraron resultados.</p>
       }
     </div>
+
+    <mat-paginator
+      [length]="total"
+      [pageSize]="filters.limit!"
+      [pageSizeOptions]="[12, 24, 48]"
+      [pageIndex]="(filters.page || 1) - 1"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    />
   }
 </div>
