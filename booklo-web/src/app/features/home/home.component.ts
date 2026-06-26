@@ -45,13 +45,16 @@ export class HomeComponent implements OnInit, AfterViewChecked, OnDestroy {
   private tryStart(key: string, ref: ElementRef<HTMLElement> | undefined): void {
     if (ref && !this.autoStarted.has(key)) {
       this.autoStarted.add(key);
-      const el = ref.nativeElement;
-      const timer = setInterval(() => {
-        const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 10;
-        el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + this.CARD_WIDTH, behavior: 'smooth' });
-      }, this.AUTO_DELAY);
-      this.timers.set(key, timer);
+      this.startInterval(key, ref.nativeElement);
     }
+  }
+
+  private startInterval(key: string, el: HTMLElement): void {
+    const timer = setInterval(() => {
+      const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 10;
+      el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + this.CARD_WIDTH, behavior: 'smooth' });
+    }, this.AUTO_DELAY);
+    this.timers.set(key, timer);
   }
 
   pauseScroll(key: string): void {
@@ -62,11 +65,7 @@ export class HomeComponent implements OnInit, AfterViewChecked, OnDestroy {
   resumeScroll(key: string, el: HTMLElement): void {
     if (this.autoStarted.has(key)) {
       this.pauseScroll(key);
-      const timer = setInterval(() => {
-        const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 10;
-        el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + this.CARD_WIDTH, behavior: 'smooth' });
-      }, this.AUTO_DELAY);
-      this.timers.set(key, timer);
+      this.startInterval(key, el);
     }
   }
 
