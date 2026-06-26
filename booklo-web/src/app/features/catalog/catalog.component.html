@@ -52,15 +52,28 @@
             [alt]="book.title"
           />
           <mat-card-content>
-            <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
-              {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
-            </span>
+            <div class="badges">
+              <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
+                {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
+              </span>
+              @if (book.stock === 0) {
+                <span class="badge badge--sin-stock">SIN STOCK</span>
+              } @else if (book.stock <= 5) {
+                <span class="badge badge--ultimas">ÚLTIMAS UNIDADES</span>
+              }
+              @if (book.original_price && book.original_price > book.price) {
+                <span class="badge badge--oferta">{{ ((1 - book.price / book.original_price) * 100) | number:'1.0-0' }}% OFF</span>
+              }
+            </div>
             <h3>{{ book.title }}</h3>
             @if (book.publisher) {
               <p class="publisher">{{ book.publisher }}</p>
             }
             <p class="authors">{{ book.authors }}</p>
             <p class="price">{{ book.price | currency:'ARS':'symbol':'1.0-0' }}</p>
+            @if (book.price >= 3000) {
+              <p class="cuotas">3 cuotas de {{ book.price / 3 | currency:'ARS':'symbol':'1.0-0' }} sin interés</p>
+            }
           </mat-card-content>
         </mat-card>
       }

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +22,7 @@ import { CategoryService, Category } from '../../core/services/category.service'
     FormsModule,
     RouterLink,
     CurrencyPipe,
+    DecimalPipe,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,

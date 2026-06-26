@@ -28,9 +28,17 @@
 
       <div class="info-section">
         <p class="product-type">{{ book.product_type | uppercase }}</p>
-        <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
-          {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
-        </span>
+        <div class="badges">
+          <span class="badge" [class.badge--nuevo]="book.condition === 'nuevo'" [class.badge--usado]="book.condition === 'usado'">
+            {{ book.condition === 'nuevo' ? 'NUEVO' : 'USADO' }}
+          </span>
+          @if (book.stock === 0 && !book.allows_backorder) {
+            <span class="badge badge--sin-stock">SIN STOCK</span>
+          }
+          @if (book.original_price && book.original_price > book.price) {
+            <span class="badge badge--oferta">{{ ((1 - book.price / book.original_price) * 100) | number:'1.0-0' }}% OFF</span>
+          }
+        </div>
         <h1>{{ book.title }}</h1>
         @if (book.subtitle) {
           <h2>{{ book.subtitle }}</h2>
@@ -144,6 +152,20 @@
             <p>{{ book.description }}</p>
           </div>
         }
+
+        <mat-divider />
+        <div class="share">
+          <p class="share-label">Compartir</p>
+          <a mat-stroked-button [href]="'https://wa.me/?text=Mirá este libro en Booklo: ' + currentUrl" target="_blank">
+            <mat-icon>share</mat-icon> WhatsApp
+          </a>
+          <button mat-stroked-button (click)="copyLink()">
+            <mat-icon>link</mat-icon> Copiar link
+          </button>
+          @if (linkCopied) {
+            <span class="copied-msg">¡Link copiado!</span>
+          }
+        </div>
       </div>
     </div>
   }

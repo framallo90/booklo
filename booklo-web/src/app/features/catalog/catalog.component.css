@@ -53,6 +53,13 @@ h1 {
   object-fit: cover;
 }
 
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
 .badge {
   display: inline-block;
   font-size: 10px;
@@ -60,11 +67,20 @@ h1 {
   letter-spacing: 0.5px;
   padding: 2px 6px;
   border-radius: 3px;
-  margin-bottom: 4px;
 }
 
-.badge--nuevo { background: #e8f5e9; color: #2e7d32; }
-.badge--usado { background: #fff3e0; color: #e65100; }
+.badge--nuevo      { background: #e8f5e9; color: #2e7d32; }
+.badge--usado      { background: #fff3e0; color: #e65100; }
+.badge--sin-stock  { background: #c62828; color: #fff; }
+.badge--ultimas    { background: #e65100; color: #fff; }
+.badge--oferta     { background: #d32f2f; color: #fff; }
+
+.cuotas {
+  font-size: 12px;
+  color: #2e7d32;
+  margin: 4px 0 0;
+  font-weight: 500;
+}
 
 .publisher {
   font-size: 12px;

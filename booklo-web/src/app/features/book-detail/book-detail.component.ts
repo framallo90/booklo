@@ -43,6 +43,11 @@ export class BookDetailComponent implements OnInit {
   quantity = 1;
   addingToCart = false;
   message = '';
+  linkCopied = false;
+
+  get currentUrl(): string {
+    return window.location.href;
+  }
 
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
@@ -92,6 +97,13 @@ export class BookDetailComponent implements OnInit {
         next: () => { this.isFavorite = true; }
       });
     }
+  }
+
+  copyLink(): void {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      this.linkCopied = true;
+      setTimeout(() => this.linkCopied = false, 2000);
+    });
   }
 
   goBack(): void {
