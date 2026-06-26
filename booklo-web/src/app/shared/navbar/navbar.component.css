@@ -21,8 +21,14 @@ mat-toolbar {
   border-radius: 4px;
 }
 
-a[mat-button], a[mat-raised-button], button[mat-button] {
+a[mat-button], button[mat-button] {
   color: white;
+}
+
+a[mat-raised-button][color="accent"] {
+  background-color: white !important;
+  color: #1976d2 !important;
+  margin-left: 8px;
 }
 
 mat-icon {
