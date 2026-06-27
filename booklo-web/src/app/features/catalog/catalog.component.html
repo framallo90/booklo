@@ -1,6 +1,14 @@
 <div class="catalog-container">
   <h1>Catálogo</h1>
 
+  <!-- Filtro A-Z -->
+  <div class="alpha-strip">
+    <button class="alpha-btn" [class.active]="!filters.letter" (click)="onLetterFilter('')">Todos</button>
+    @for (l of letters; track l) {
+      <button class="alpha-btn" [class.active]="filters.letter === l" (click)="onLetterFilter(l)">{{ l }}</button>
+    }
+  </div>
+
   <div class="filters">
     <mat-form-field appearance="outline">
       <mat-label>Buscar</mat-label>

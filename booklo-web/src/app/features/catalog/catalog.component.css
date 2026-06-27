@@ -4,8 +4,35 @@
   padding: 24px 16px;
 }
 
-h1 {
-  margin-bottom: 24px;
+h1 { margin-bottom: 16px; }
+
+.alpha-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.alpha-btn {
+  min-width: 36px;
+  height: 32px;
+  padding: 0 6px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  transition: background 0.15s, color 0.15s;
+}
+
+.alpha-btn:hover { background: #f5f5f5; }
+
+.alpha-btn.active {
+  background: #1976d2;
+  color: white;
+  border-color: #1976d2;
 }
 
 .filters {

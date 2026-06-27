@@ -7,6 +7,7 @@ export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {
     const filters: BookModel.BookFilters = {
       search: req.query.search as string,
+      letter: req.query.letter as string | undefined,
       category_id: req.query.category_id ? Number(req.query.category_id) : undefined,
       product_type: req.query.product_type as string,
       condition: req.query.condition as 'nuevo' | 'usado' | undefined,

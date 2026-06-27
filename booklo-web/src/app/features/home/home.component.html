@@ -5,7 +5,19 @@
     <div class="hero-content">
       <h1>Tu próxima lectura te está esperando</h1>
       <p>Libros nuevos y usados con envío a todo el país.</p>
-      <a mat-raised-button color="primary" routerLink="/catalog">Ver catálogo</a>
+      <div class="hero-search">
+        <input
+          class="hero-search-input"
+          type="text"
+          placeholder="Buscá por título, autor o ISBN..."
+          [(ngModel)]="heroSearch"
+          (keydown.enter)="searchCatalog()"
+        />
+        <button class="hero-search-btn" (click)="searchCatalog()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+      <a class="hero-link" routerLink="/catalog">Ver catálogo completo</a>
     </div>
   </section>
 

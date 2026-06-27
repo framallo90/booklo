@@ -29,6 +29,7 @@ export interface BooksResponse {
 
 export interface BookFilters {
   search?: string;
+  letter?: string;
   category_id?: number;
   product_type?: string;
   condition?: string;
@@ -76,6 +77,7 @@ export class BookService {
   getBooks(filters: BookFilters = {}): Observable<BooksResponse> {
     let params = new HttpParams();
     if (filters.search) params = params.set('search', filters.search);
+    if (filters.letter) params = params.set('letter', filters.letter);
     if (filters.category_id) params = params.set('category_id', filters.category_id);
     if (filters.product_type) params = params.set('product_type', filters.product_type);
     if (filters.condition) params = params.set('condition', filters.condition);
@@ -91,7 +93,7 @@ export class BookService {
     return this.http.get<BookDetail>(`${this.API}/books/${id}`);
   }
 
-  update(id: number, data: Partial<{ price: number; stock: number; category_id: number; cover_url: string }>) {
+  update(id: number, data: Partial<{ price: number; stock: number; category_id: number; cover_url: string; hot_sale: boolean; featured: boolean }>) {
     return this.http.patch(`${this.API}/books/${id}`, data);
   }
 

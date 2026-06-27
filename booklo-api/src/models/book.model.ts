@@ -1,5 +1,5 @@
 import pool from '../config/database';
-import { RowDataPacket, ResultSetHeader, OkPacket } from 'mysql2';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 
 
@@ -35,6 +35,7 @@ export interface Book {
 
 export interface BookFilters {
   search?: string;
+  letter?: string;
   category_id?: number;
   product_type?: string;
   condition?: 'nuevo' | 'usado';
@@ -63,6 +64,11 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
   if (filters.search) {
     conditions.push('(b.title LIKE ? OR b.isbn_10 LIKE ? OR b.isbn_13 LIKE ?)');
     params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+  }
+
+  if (filters.letter) {
+    conditions.push('b.title LIKE ?');
+    params.push(`${filters.letter}%`);
   }
 
   if (filters.category_id) {
@@ -179,6 +185,7 @@ export interface BookData {
   country?: string;
   dimensions?: string;
   featured?: boolean;
+  hot_sale?: boolean;
   allows_backorder?: boolean;
   category_id?: number;
   authors?: string[];
@@ -243,7 +250,9 @@ export const update = async (id: number, data: Partial<BookData>): Promise<boole
   if (data.description !== undefined) { fields.push('description = ?'); params.push(data.description); }
   if (data.price !== undefined) { fields.push('price = ?'); params.push(data.price); }
   if (data.stock !== undefined) { fields.push('stock = ?'); params.push(data.stock); }
-  if (data.featured !== undefined) { fields.push('featured = ?'); params.push(data.featured); }
+  if (data.featured !== undefined)  { fields.push('featured = ?');  params.push(data.featured); }
+  if (data.hot_sale !== undefined)  { fields.push('hot_sale = ?');  params.push(data.hot_sale); }
+  if (data.price !== undefined)     { fields.push('price_updated_at = NOW()'); }
   if (data.allows_backorder !== undefined) { fields.push('allows_backorder = ?'); params.push(data.allows_backorder); }
   if (data.category_id !== undefined) { fields.push('category_id = ?'); params.push(data.category_id); }
   if (data.cover_url !== undefined)      { fields.push('cover_url = ?');      params.push(data.cover_url); }
@@ -273,6 +282,22 @@ export const deactivate = async (id: number): Promise<boolean> => {
     [id]
   );
   return result.affectedRows > 0;
+};
+
+export const getOutdated = async (): Promise<RowDataPacket[]> => {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT b.id, b.title, b.price, b.price_updated_at,
+            GROUP_CONCAT(a.name SEPARATOR ', ') AS authors
+     FROM books b
+     LEFT JOIN book_authors ba ON b.id = ba.book_id
+     LEFT JOIN authors a ON ba.author_id = a.id
+     WHERE b.status = 'activo'
+       AND (b.price_updated_at IS NULL OR b.price_updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY))
+     GROUP BY b.id
+     ORDER BY b.price_updated_at ASC
+     LIMIT 100`
+  );
+  return rows;
 };
 
 export const logImport = async (

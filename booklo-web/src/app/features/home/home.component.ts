@@ -1,6 +1,9 @@
 import { Component, OnInit, AfterViewChecked, OnDestroy, ViewChild, ElementRef, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -10,12 +13,20 @@ import { Book } from '../../core/services/book.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, MatButtonModule, MatIconModule],
+  imports: [RouterLink, FormsModule, CurrencyPipe, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit, AfterViewChecked, OnDestroy {
   private homeService = inject(HomeService);
+  private router      = inject(Router);
+
+  heroSearch = '';
+
+  searchCatalog(): void {
+    const term = this.heroSearch.trim();
+    this.router.navigate(['/catalog'], term ? { queryParams: { search: term } } : {});
+  }
 
   featured: Book[] = [];
   novedades: Book[] = [];

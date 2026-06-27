@@ -1,0 +1,77 @@
+<div class="page-header">
+  <h1>Usuarios</h1>
+  <span class="total">{{ total }} registrados</span>
+</div>
+
+<div class="toolbar">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Buscar por nombre o email</mat-label>
+    <input matInput [value]="search" (input)="onSearchChange($any($event.target).value)" />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+</div>
+
+@if (loading) {
+  <div class="spinner-wrap"><mat-spinner diameter="40" /></div>
+} @else {
+  <table mat-table [dataSource]="users" class="users-table">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let u">{{ u.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let u">{{ u.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>Rol</th>
+      <td mat-cell *matCellDef="let u">
+        <span class="role-badge" [class.role-admin]="u.role_id === 1">
+          {{ u.role_id === 1 ? 'Admin' : 'Cliente' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="orders">
+      <th mat-header-cell *matHeaderCellDef>Pedidos</th>
+      <td mat-cell *matCellDef="let u">{{ u.order_count }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="created_at">
+      <th mat-header-cell *matHeaderCellDef>Registrado</th>
+      <td mat-cell *matCellDef="let u">{{ u.created_at | date:'dd/MM/yyyy' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let u">
+        <span class="status-badge" [class.active]="u.is_active">
+          {{ u.is_active ? 'Activo' : 'Inactivo' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let u">
+        <button mat-icon-button
+          [matTooltip]="u.is_active ? 'Desactivar cuenta' : 'Activar cuenta'"
+          (click)="toggleActive(u)">
+          <mat-icon>{{ u.is_active ? 'block' : 'check_circle' }}</mat-icon>
+        </button>
+        <button mat-icon-button
+          [matTooltip]="u.role_id === 1 ? 'Quitar admin' : 'Hacer admin'"
+          (click)="toggleRole(u)">
+          <mat-icon>{{ u.role_id === 1 ? 'person' : 'admin_panel_settings' }}</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+        [class.inactive-row]="!row.is_active"></tr>
+  </table>
+}

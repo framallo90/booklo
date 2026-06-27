@@ -23,10 +23,15 @@ export const adminRoutes: Routes = [
         path: 'dashboard',
         loadComponent: () => import('./dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent)
       },
-      { 
-        path: 'import', loadComponent: () => import('./import/admin-import.component').then(m => m.AdminImportComponent) 
+      {
+        path: 'import', loadComponent: () => import('./import/admin-import.component').then(m => m.AdminImportComponent)
       },
-
+      {
+        path: 'users', loadComponent: () => import('./users/admin-users.component').then(m => m.AdminUsersComponent)
+      },
+      {
+        path: 'catalog', loadComponent: () => import('./catalog/admin-catalog.component').then(m => m.AdminCatalogComponent)
+      },
     ]
   }
 ];

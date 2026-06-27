@@ -1,0 +1,8 @@
+.page-header { margin-bottom: 8px; }
+.page-header h1 { margin: 0; font-size: 22px; font-weight: 600; }
+.subtitle { color: #888; font-size: 14px; }
+.count { color: #555; margin: 12px 0 16px; font-size: 14px; }
+.empty { color: #4caf50; font-size: 15px; padding: 24px 0; }
+.spinner-wrap { display: flex; justify-content: center; padding: 48px; }
+.catalog-table { width: 100%; }
+.urgent { color: #b71c1c; font-weight: 600; }

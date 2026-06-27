@@ -26,12 +26,45 @@
   opacity: 0.9;
 }
 
-.hero-content a[mat-raised-button] {
+.hero-search {
+  display: flex;
+  align-items: center;
   background: white;
-  color: #1976d2;
-  font-size: 16px;
-  padding: 8px 32px;
-  font-weight: 600;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 560px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.hero-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  font-size: 15px;
+  color: #1a1a1a;
+  background: transparent;
+}
+
+.hero-search-btn {
+  border: none;
+  background: #1565c0;
+  color: white;
+  padding: 0 18px;
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.hero-search-btn:hover { background: #0d47a1; }
+
+.hero-link {
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+  text-decoration: underline;
 }
 
 /* Secciones */
