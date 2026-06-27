@@ -1,12 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CurrencyPipe } from '@angular/common';
 
 import { OrderService } from '../../core/services/order.service';
 import { CartService, Cart } from '../../core/services/cart.service';
+import { PaymentService } from '../../core/services/payment.service';
 
 @Component({
   selector: 'app-cart',
@@ -14,6 +16,7 @@ import { CartService, Cart } from '../../core/services/cart.service';
 
   imports: [
     RouterLink,
+    CurrencyPipe,
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
@@ -25,14 +28,15 @@ import { CartService, Cart } from '../../core/services/cart.service';
 })
 
 export class CartComponent implements OnInit {
-  private cartService = inject(CartService);
-  private router = inject(Router);
-  private orderService = inject(OrderService);
+  private cartService    = inject(CartService);
+  private orderService   = inject(OrderService);
+  private paymentService = inject(PaymentService);
 
   cart: Cart | null = null;
-  loading = true;
+  loading    = true;
   confirming = false;
-  message = '';
+  paying     = false;
+  message    = '';
 
   ngOnInit(): void {
     this.loadCart();
@@ -74,6 +78,20 @@ export class CartComponent implements OnInit {
       error: (err) => {
         this.message = err.error?.message || 'Error al confirmar el pedido';
         this.confirming = false;
+      },
+    });
+  }
+
+  payWithMP(): void {
+    this.paying  = true;
+    this.message = '';
+    this.paymentService.createPreference().subscribe({
+      next: ({ init_point }) => {
+        window.location.href = init_point;
+      },
+      error: (err) => {
+        this.message = err.error?.message || 'Error al iniciar el pago';
+        this.paying = false;
       },
     });
   }

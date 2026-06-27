@@ -1,0 +1,37 @@
+<div class="page">
+
+  <div class="demo-banner">
+    <mat-icon>science</mat-icon>
+    Entorno de prueba — los pagos no son reales
+  </div>
+
+  <div class="card">
+    <div class="icon-ok">
+      <mat-icon>check_circle</mat-icon>
+    </div>
+
+    <h1>¡Gracias por tu compra!</h1>
+
+    @if (orderId) {
+      <p class="order-ref">Pedido <strong>#{{ orderId }}</strong></p>
+    }
+
+    @if (status === 'pending') {
+      <p class="detail">Tu pago está siendo procesado. Te avisaremos por email cuando se confirme.</p>
+    } @else {
+      <p class="detail">Tu pedido fue confirmado. En breve recibirás un email con los detalles.</p>
+    }
+
+    <div class="steps">
+      <div class="step"><span>1</span> Pago recibido</div>
+      <div class="step"><span>2</span> Preparando envío</div>
+      <div class="step"><span>3</span> En camino</div>
+    </div>
+
+    <div class="actions">
+      <a mat-raised-button color="primary" routerLink="/orders">Ver mis pedidos</a>
+      <a mat-stroked-button routerLink="/catalog">Seguir comprando</a>
+    </div>
+  </div>
+
+</div>

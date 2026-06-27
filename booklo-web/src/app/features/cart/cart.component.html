@@ -44,22 +44,40 @@
 
         <div class="summary">
           <h2>Resumen</h2>
-          <div class="summary-row">
+          <div class="summary-row total">
             <span>Total</span>
-            <strong>${{ cart.total }}</strong>
+            <strong>{{ cart.total | currency:'ARS':'symbol':'1.0-0' }}</strong>
           </div>
-          <mat-divider />
-          @if (message) {
-            <p class="message">{{ message }}</p>
-          }
+
+          <div class="installments-badge">
+            <mat-icon>credit_card</mat-icon>
+            Hasta 12 cuotas sin interés
+          </div>
+
           <button
-            mat-raised-button
-            color="primary"
-            [disabled]="confirming"
-            (click)="confirmOrder()"
+            class="mp-btn"
+            [disabled]="paying"
+            (click)="payWithMP()"
           >
-            {{ confirming ? 'Procesando...' : 'Confirmar pedido' }}
+            @if (paying) {
+              Procesando...
+            } @else {
+              <img src="assets/mp-logo.svg" alt="Mercado Pago" height="22" />
+              Pagar con Mercado Pago
+            }
           </button>
+
+          <div class="payment-methods">
+            <img src="assets/pm-visa.svg"       alt="Visa"        title="Visa" />
+            <img src="assets/pm-mastercard.svg" alt="Mastercard"  title="Mastercard" />
+            <img src="assets/pm-amex.svg"       alt="Amex"        title="American Express" />
+            <img src="assets/pm-rapipago.svg"   alt="Rapipago"    title="Rapipago" />
+            <img src="assets/pm-pagofacil.svg"  alt="Pago Fácil"  title="Pago Fácil" />
+          </div>
+
+          @if (message) {
+            <p class="message-err">{{ message }}</p>
+          }
         </div>
       </div>
     }

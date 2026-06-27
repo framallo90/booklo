@@ -1,0 +1,30 @@
+<div class="page">
+
+  <div class="demo-banner">
+    <mat-icon>science</mat-icon>
+    Entorno de prueba — los pagos no son reales
+  </div>
+
+  <div class="card">
+    <div class="icon-err">
+      <mat-icon>cancel</mat-icon>
+    </div>
+
+    <h1>No se pudo procesar el pago</h1>
+
+    @if (orderId) {
+      <p class="order-ref">Pedido <strong>#{{ orderId }}</strong></p>
+    }
+
+    <p class="detail">
+      Tu pedido fue creado pero el pago no se completó.
+      Podés intentarlo de nuevo o elegir otro método de pago.
+    </p>
+
+    <div class="actions">
+      <a mat-raised-button color="primary" routerLink="/cart">Reintentar pago</a>
+      <a mat-stroked-button routerLink="/orders">Ver mis pedidos</a>
+    </div>
+  </div>
+
+</div>

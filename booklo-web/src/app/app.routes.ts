@@ -48,5 +48,13 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard],
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.adminRoutes)
   },
+  {
+    path: 'payment/success',
+    loadComponent: () => import('./features/payment/payment-success.component').then(m => m.PaymentSuccessComponent)
+  },
+  {
+    path: 'payment/failure',
+    loadComponent: () => import('./features/payment/payment-failure.component').then(m => m.PaymentFailureComponent)
+  },
   { path: '**', redirectTo: 'catalog' }
 ];

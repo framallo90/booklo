@@ -12,6 +12,7 @@ import orderRoutes from './routes/order.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import homeRoutes from './routes/home.routes';
 import adminRoutes from './routes/admin.routes';
+import paymentRoutes from './routes/payment.routes';
 
 
 
@@ -37,6 +38,7 @@ app.use('/orders', orderRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/home', homeRoutes);
 app.use('/admin', adminRoutes);
+app.use('/payments', paymentRoutes);
 
 
 

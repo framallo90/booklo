@@ -39,3 +39,6 @@ deploy-server.py
 # Archivos locales de Claude (no van al repo)
 CLAUDE.md
 .claude/
+
+# Scripts de carga de datos (operacionales, no parte del proyecto)
+/scraper/
