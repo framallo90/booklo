@@ -62,8 +62,11 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
   const params: unknown[] = [];
 
   if (filters.search) {
-    conditions.push('(b.title LIKE ? OR b.isbn_10 LIKE ? OR b.isbn_13 LIKE ?)');
-    params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+    const words = filters.search.trim().split(/\s+/).filter(Boolean);
+    const titleConds = words.map(() => 'b.title LIKE ?').join(' AND ');
+    conditions.push(`((${titleConds}) OR b.isbn_10 LIKE ? OR b.isbn_13 LIKE ?)`);
+    words.forEach(w => params.push(`%${w}%`));
+    params.push(`%${filters.search}%`, `%${filters.search}%`);
   }
 
   if (filters.letter) {
