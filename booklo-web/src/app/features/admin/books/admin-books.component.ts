@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +20,6 @@ import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
   imports: [
     RouterLink,
     MatTableModule,
-    MatSortModule,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
@@ -59,10 +57,24 @@ export class AdminBooksComponent implements OnInit {
     });
   }
 
-  onSort(sort: Sort): void {
-    this.sortParam = sort.active && sort.direction ? `${sort.active}_${sort.direction}` : '';
+  sortField = '';
+  sortDir: 'asc' | 'desc' = 'asc';
+
+  setSort(field: string): void {
+    if (this.sortField === field) {
+      this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDir  = 'asc';
+    }
+    this.sortParam = `${field}_${this.sortDir}`;
     this.page = 1;
     this.load();
+  }
+
+  sortIcon(field: string): string {
+    if (this.sortField !== field) return 'unfold_more';
+    return this.sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
   load(): void {

@@ -44,6 +44,38 @@ table { width: 100%; }
 
 .low-stock { color: #c62828; font-weight: 600; }
 
+.sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sort-btn mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #aaa;
+}
+
+.sort-btn.active {
+  color: #1976d2;
+}
+
+.sort-btn.active mat-icon {
+  color: #1976d2;
+}
+
+.sort-btn:hover { color: #1976d2; }
+
 td.mat-column-cover { width: 56px; }
 td.mat-column-actions { width: 60px; text-align: right; }
 
