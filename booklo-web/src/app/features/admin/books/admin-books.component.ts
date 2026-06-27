@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +21,7 @@ import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
   imports: [
     RouterLink,
     MatTableModule,
+    MatSortModule,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
@@ -43,6 +45,7 @@ export class AdminBooksComponent implements OnInit {
   page = 1;
   limit = 15;
   search = '';
+  sortParam = '';
   displayedColumns = ['cover', 'title', 'authors', 'price', 'stock', 'actions'];
 
   private searchSubject = new Subject<string>();
@@ -56,9 +59,15 @@ export class AdminBooksComponent implements OnInit {
     });
   }
 
+  onSort(sort: Sort): void {
+    this.sortParam = sort.active && sort.direction ? `${sort.active}_${sort.direction}` : '';
+    this.page = 1;
+    this.load();
+  }
+
   load(): void {
     this.loading = true;
-    this.bookService.getBooks({ search: this.search, page: this.page, limit: this.limit }).subscribe({
+    this.bookService.getBooks({ search: this.search, page: this.page, limit: this.limit, sort: this.sortParam || undefined }).subscribe({
       next: (res) => { this.books = res.data; this.total = res.total; this.loading = false; },
       error: () => { this.loading = false; },
     });

@@ -34,6 +34,7 @@ export const getStats = async (req: AuthRequest, res: Response): Promise<void> =
       pool.query<RowDataPacket[]>(`
         SELECT b.id, b.title, SUM(oi.quantity) AS units_sold
         FROM order_items oi JOIN books b ON oi.book_id = b.id
+        WHERE b.status = 'activo'
         GROUP BY b.id, b.title
         ORDER BY units_sold DESC LIMIT 5
       `)

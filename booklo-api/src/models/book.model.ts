@@ -45,7 +45,7 @@ export interface BookFilters {
   featured?: boolean;
   min_price?: number;
   max_price?: number;
-  sort?: 'price_asc' | 'price_desc' | 'newest';
+  sort?: 'price_asc' | 'price_desc' | 'newest' | 'title_asc' | 'title_desc' | 'authors_asc' | 'authors_desc' | 'stock_asc' | 'stock_desc';
   page?: number;
   limit?: number;
 }
@@ -116,8 +116,14 @@ export const findAll = async (filters: BookFilters = {}): Promise<BooksPage> => 
   }
 
   let orderBy = 'b.created_at DESC';
-  if (filters.sort === 'price_asc') orderBy = 'b.price ASC';
-  else if (filters.sort === 'price_desc') orderBy = 'b.price DESC';
+  if      (filters.sort === 'price_asc')    orderBy = 'b.price ASC';
+  else if (filters.sort === 'price_desc')   orderBy = 'b.price DESC';
+  else if (filters.sort === 'title_asc')    orderBy = 'b.title ASC';
+  else if (filters.sort === 'title_desc')   orderBy = 'b.title DESC';
+  else if (filters.sort === 'authors_asc')  orderBy = 'authors ASC';
+  else if (filters.sort === 'authors_desc') orderBy = 'authors DESC';
+  else if (filters.sort === 'stock_asc')    orderBy = 'b.stock ASC';
+  else if (filters.sort === 'stock_desc')   orderBy = 'b.stock DESC';
 
   const page = filters.page || 1;
   const limit = filters.limit || 20;
