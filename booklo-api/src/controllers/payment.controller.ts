@@ -42,6 +42,7 @@ export const createPreference = async (req: AuthRequest, res: Response): Promise
 
     res.json({ orderId, init_point: result.init_point });
   } catch (error) {
+    console.error('[payment] createPreference error:', error);
     res.status(500).json({ message: 'Error al crear la preferencia de pago' });
   }
 };
