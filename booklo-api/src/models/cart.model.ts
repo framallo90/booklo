@@ -12,11 +12,15 @@ export interface CartItem {
 }
 
 const getOrCreateCart = async (userId: number): Promise<number> => {
-  const [result] = await pool.query<ResultSetHeader>(
-    'INSERT INTO carts (user_id) VALUES (?) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)',
+  await pool.query(
+    'INSERT IGNORE INTO carts (user_id) VALUES (?)',
     [userId]
   );
-  return result.insertId;
+  const [rows] = await pool.query<RowDataPacket[]>(
+    'SELECT id FROM carts WHERE user_id = ?',
+    [userId]
+  );
+  return (rows[0] as any).id;
 };
 
 export const findByUser = async (userId: number): Promise<CartItem[]> => {

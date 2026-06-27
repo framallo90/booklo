@@ -49,10 +49,6 @@
             <strong>{{ cart.total | currency:'ARS':'symbol':'1.0-0' }}</strong>
           </div>
 
-          <div class="installments-badge">
-            <mat-icon>credit_card</mat-icon>
-            Hasta 12 cuotas sin interés
-          </div>
 
           <button
             class="mp-btn"
@@ -62,18 +58,11 @@
             @if (paying) {
               Procesando...
             } @else {
-              <img src="assets/mp-logo.svg" alt="Mercado Pago" height="22" />
               Pagar con Mercado Pago
             }
           </button>
 
-          <div class="payment-methods">
-            <img src="assets/pm-visa.svg"       alt="Visa"        title="Visa" />
-            <img src="assets/pm-mastercard.svg" alt="Mastercard"  title="Mastercard" />
-            <img src="assets/pm-amex.svg"       alt="Amex"        title="American Express" />
-            <img src="assets/pm-rapipago.svg"   alt="Rapipago"    title="Rapipago" />
-            <img src="assets/pm-pagofacil.svg"  alt="Pago Fácil"  title="Pago Fácil" />
-          </div>
+          <p class="payment-methods-text">Visa · Mastercard · Amex · Rapipago · Pago Fácil</p>
 
           @if (message) {
             <p class="message-err">{{ message }}</p>

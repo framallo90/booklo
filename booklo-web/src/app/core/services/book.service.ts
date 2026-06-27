@@ -81,8 +81,8 @@ export class BookService {
     if (filters.category_id) params = params.set('category_id', filters.category_id);
     if (filters.product_type) params = params.set('product_type', filters.product_type);
     if (filters.condition) params = params.set('condition', filters.condition);
-    if (filters.min_price !== undefined) params = params.set('min_price', filters.min_price);
-    if (filters.max_price !== undefined) params = params.set('max_price', filters.max_price);
+    if (filters.min_price != null) params = params.set('min_price', filters.min_price);
+    if (filters.max_price != null) params = params.set('max_price', filters.max_price);
     if (filters.sort) params = params.set('sort', filters.sort);
     if (filters.page) params = params.set('page', filters.page);
     if (filters.limit) params = params.set('limit', filters.limit);

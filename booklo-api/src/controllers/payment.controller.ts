@@ -35,10 +35,6 @@ export const createPreference = async (req: AuthRequest, res: Response): Promise
           pending: `${FRONTEND_URL}/payment/success`,
         },
         auto_return: 'approved',
-        payment_methods: {
-          installments: 12,
-          default_installments: 1,
-        },
         external_reference: String(orderId),
         statement_descriptor: 'BOOKLO',
       },
