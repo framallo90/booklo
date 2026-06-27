@@ -1,0 +1,82 @@
+<div class="stock-container">
+  <h1>Movimientos de stock</h1>
+
+  <div class="filters">
+    <mat-form-field appearance="outline" class="filter-search">
+      <mat-label>Buscar libro</mat-label>
+      <input matInput [(ngModel)]="filterSearch" (input)="onSearchInput()" placeholder="Título...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-type">
+      <mat-label>Tipo</mat-label>
+      <mat-select [(ngModel)]="filterType" (ngModelChange)="onTypeChange()">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="entrada">Entrada (ingreso)</mat-option>
+        <mat-option value="venta">Venta (egreso)</mat-option>
+        <mat-option value="ajuste">Ajuste</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (loading) {
+    <div class="spinner-wrap">
+      <mat-spinner diameter="40" />
+    </div>
+  }
+
+  @if (!loading) {
+    <table mat-table [dataSource]="movements" class="movements-table">
+
+      <ng-container matColumnDef="created_at">
+        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+        <td mat-cell *matCellDef="let m">
+          {{ m.created_at | date:'dd/MM/yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="book_title">
+        <th mat-header-cell *matHeaderCellDef>Libro</th>
+        <td mat-cell *matCellDef="let m" class="book-title">{{ m.book_title }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+        <td mat-cell *matCellDef="let m">
+          <span class="type-badge" [class]="'type-' + m.type">
+            <mat-icon>{{ typeIcon(m.type) }}</mat-icon>
+            {{ typeLabel(m.type) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef class="col-qty">Cantidad</th>
+        <td mat-cell *matCellDef="let m" class="col-qty">
+          <span [class]="m.type === 'entrada' ? 'qty-pos' : 'qty-neg'">
+            {{ m.type === 'entrada' ? '+' : '-' }}{{ m.quantity }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef>Referencia</th>
+        <td mat-cell *matCellDef="let m" class="reason">{{ m.reason }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+    </table>
+
+    @if (movements.length === 0) {
+      <p class="empty">No hay movimientos registrados.</p>
+    }
+
+    <mat-paginator
+      [length]="total"
+      [pageSize]="limit"
+      [pageSizeOptions]="[25, 50, 100]"
+      (page)="onPage($event)"
+    />
+  }
+</div>

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as BookModel from '../models/book.model';
 import * as IsbnService from '../services/isbn.service';
+import pool from '../config/database';
 
 
 export const getAll = async (req: Request, res: Response): Promise<void> => {
@@ -62,6 +63,24 @@ export const createBook = async (req: Request, res: Response): Promise<void> => 
 export const updateBook = async (req: Request, res: Response): Promise<void> => {
   try {
     const id = Number(req.params.id);
+
+    if (req.body.stock !== undefined) {
+      const [rows]: any = await pool.query('SELECT stock FROM books WHERE id = ?', [id]);
+      const currentStock = rows?.[0]?.stock ?? 0;
+      const newStock = Number(req.body.stock);
+      const diff = newStock - currentStock;
+
+      if (diff !== 0) {
+        const type   = diff > 0 ? 'entrada' : 'ajuste';
+        const reason = req.body.stock_reason?.trim() || (diff > 0 ? 'Ingreso manual' : 'Ajuste manual');
+        await pool.query(
+          'INSERT INTO stock_movements (book_id, type, quantity, reason) VALUES (?, ?, ?, ?)',
+          [id, type, Math.abs(diff), reason]
+        );
+      }
+    }
+    delete req.body.stock_reason;
+
     const updated = await BookModel.update(id, req.body);
 
     if (!updated) {

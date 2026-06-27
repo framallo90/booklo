@@ -17,16 +17,17 @@ export const createPreference = async (req: AuthRequest, res: Response): Promise
       res.status(400).json({ message: 'El carrito está vacío' }); return;
     }
 
-    const orderId = await OrderModel.create(userId, cartItems, 'mercadopago');
+    // Crea la orden SIN descontar stock ni limpiar carrito — eso ocurre al confirmar el pago
+    const orderId = await OrderModel.createForMP(userId, cartItems);
 
     const preference = new Preference(mp);
     const result = await preference.create({
       body: {
         items: cartItems.map(item => ({
-          id:         String(item.book_id),
-          title:      item.title,
-          quantity:   item.quantity,
-          unit_price: Number(item.price),
+          id:          String(item.book_id),
+          title:       item.title,
+          quantity:    item.quantity,
+          unit_price:  Number(item.price),
           currency_id: 'ARS',
         })),
         back_urls: {
@@ -34,16 +35,17 @@ export const createPreference = async (req: AuthRequest, res: Response): Promise
           failure: `${FRONTEND_URL}/payment/failure`,
           pending: `${FRONTEND_URL}/payment/success`,
         },
-        auto_return: 'approved',
+        // auto_return omitido: requiere HTTPS en back_url (MP lo rechaza con HTTP)
         external_reference: String(orderId),
         statement_descriptor: 'BOOKLO',
       },
     });
 
     res.json({ orderId, init_point: result.init_point });
-  } catch (error) {
-    console.error('[payment] createPreference error:', error);
-    res.status(500).json({ message: 'Error al crear la preferencia de pago' });
+  } catch (error: any) {
+    const detail = error?.cause ?? error?.message ?? String(error);
+    console.error('[payment] createPreference error:', detail);
+    res.status(500).json({ message: 'Error al crear la preferencia de pago', detail });
   }
 };
 
@@ -59,7 +61,15 @@ export const webhook = async (req: AuthRequest, res: Response): Promise<void> =>
     if (!orderId) { res.sendStatus(200); return; }
 
     if (paymentData.status === 'approved') {
-      await OrderModel.updateStatus(orderId, 'confirmado');
+      const [orderRows]: any = await pool.query(
+        'SELECT user_id FROM orders WHERE id = ?', [orderId]
+      );
+      const userId = orderRows?.[0]?.user_id;
+      if (userId) {
+        await OrderModel.confirmPayment(orderId, userId);
+      } else {
+        await OrderModel.updateStatus(orderId, 'confirmado');
+      }
     }
 
     res.sendStatus(200);
@@ -78,7 +88,7 @@ export const confirmByRedirect = async (req: AuthRequest, res: Response): Promis
       [orderId, userId, 'pendiente']
     );
     if (rows.length > 0) {
-      await OrderModel.updateStatus(orderId, 'confirmado');
+      await OrderModel.confirmPayment(orderId, userId);
     }
     res.json({ ok: true });
   } catch {

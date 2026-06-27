@@ -32,6 +32,9 @@ export const adminRoutes: Routes = [
       {
         path: 'catalog', loadComponent: () => import('./catalog/admin-catalog.component').then(m => m.AdminCatalogComponent)
       },
+      {
+        path: 'stock', loadComponent: () => import('./stock/admin-stock.component').then(m => m.AdminStockComponent)
+      },
     ]
   }
 ];

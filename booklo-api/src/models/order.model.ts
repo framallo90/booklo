@@ -61,6 +61,79 @@ export const create = async (
   }
 };
 
+// Crea la orden y los items SIN tocar stock ni carrito (para MP, donde el pago es diferido)
+export const createForMP = async (
+  userId: number,
+  items: CartItem[],
+): Promise<number> => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    const [orderResult] = await connection.query<ResultSetHeader>(
+      'INSERT INTO orders (user_id, total, payment_method) VALUES (?, ?, ?)',
+      [userId, total, 'mercadopago']
+    );
+    const orderId = orderResult.insertId;
+
+    for (const item of items) {
+      const subtotal = item.price * item.quantity;
+      await connection.query(
+        'INSERT INTO order_items (order_id, book_id, quantity, unit_price, subtotal) VALUES (?, ?, ?, ?, ?)',
+        [orderId, item.book_id, item.quantity, item.price, subtotal]
+      );
+    }
+
+    await connection.commit();
+    return orderId;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
+// Confirma el pago: descuenta stock, registra movimientos y limpia el carrito
+export const confirmPayment = async (orderId: number, userId: number): Promise<void> => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const [items] = await connection.query<RowDataPacket[]>(
+      'SELECT book_id, quantity FROM order_items WHERE order_id = ?',
+      [orderId]
+    );
+
+    for (const item of items as any[]) {
+      await connection.query(
+        'UPDATE books SET stock = stock - ? WHERE id = ?',
+        [item.quantity, item.book_id]
+      );
+      await connection.query(
+        'INSERT INTO stock_movements (book_id, type, quantity, reason) VALUES (?, "venta", ?, ?)',
+        [item.book_id, item.quantity, `Pedido #${orderId}`]
+      );
+    }
+
+    await connection.query('UPDATE orders SET status = ? WHERE id = ?', ['confirmado', orderId]);
+
+    await connection.query(
+      'DELETE ci FROM cart_items ci JOIN carts c ON ci.cart_id = c.id WHERE c.user_id = ?',
+      [userId]
+    );
+
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 export const findByUser = async (userId: number): Promise<Order[]> => {
   const [rows] = await pool.query<RowDataPacket[]>(
     'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC',

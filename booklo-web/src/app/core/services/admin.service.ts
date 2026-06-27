@@ -26,6 +26,21 @@ export interface OutdatedBook {
   price_updated_at: string | null;
 }
 
+export interface StockMovement {
+  id: number;
+  book_id: number;
+  book_title: string;
+  type: 'entrada' | 'venta' | 'ajuste';
+  quantity: number;
+  reason: string;
+  created_at: string;
+}
+
+export interface StockMovementsResponse {
+  total: number;
+  data: StockMovement[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private http = inject(HttpClient);
@@ -43,5 +58,17 @@ export class AdminService {
 
   getOutdatedBooks(): Observable<OutdatedBook[]> {
     return this.http.get<OutdatedBook[]>(`${this.API}/admin/catalog/outdated`);
+  }
+
+  getStockMovements(
+    page = 1,
+    limit = 50,
+    type?: string,
+    search?: string
+  ): Observable<StockMovementsResponse> {
+    let params = new HttpParams().set('page', page).set('limit', limit);
+    if (type)   params = params.set('type', type);
+    if (search) params = params.set('search', search);
+    return this.http.get<StockMovementsResponse>(`${this.API}/admin/stock-movements`, { params });
   }
 }
