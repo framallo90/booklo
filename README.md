@@ -15,6 +15,7 @@ UTN Facultad Regional Mar del Plata
 | Backend | Node.js · Express · TypeScript |
 | Base de datos | MySQL |
 | Comunicación | REST API · JSON |
+| Pagos | Mercado Pago Checkout Pro |
 | APIs externas | Open Library · Google Books |
 
 ---
@@ -40,16 +41,44 @@ booklo/
 
 ## Instalación y ejecución
 
-### Backend
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/facundoramallo/booklo.git
+cd booklo
+```
+
+### 2. Configurar el backend
 
 ```bash
 cd booklo-api
 npm install
-cp .env.example .env   # completar las variables de entorno
+cp .env.example .env
+```
+
+Editar `.env` con los valores correctos:
+
+```
+PORT=3000
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=<contraseña MySQL>
+DB_NAME=booklo_db
+JWT_SECRET=<clave secreta para firmar JWT>
+JWT_EXPIRES_IN=24h
+MP_ACCESS_TOKEN=<Access Token de Mercado Pago>
+MP_PUBLIC_KEY=<Public Key de Mercado Pago>
+FRONTEND_URL=http://localhost:4200
+```
+
+> Las credenciales de Mercado Pago se entregan por separado al evaluador.
+
+```bash
 npm run dev
 ```
 
-### Frontend
+### 3. Configurar el frontend
 
 ```bash
 cd booklo-web
@@ -140,6 +169,19 @@ La API corre en `http://localhost:3000` y el frontend en `http://localhost:4200`
 
 `PATCH /orders/:id/status` acepta: `pendiente` · `confirmado` · `enviado` · `entregado` · `cancelado`
 
+### Pagos (Mercado Pago)
+| Método | Ruta | Acceso |
+|---|---|---|
+| POST | `/payments/create-preference` | Usuario autenticado |
+| POST | `/payments/webhook` | Público (MP) |
+| POST | `/payments/confirm/:orderId` | Usuario autenticado |
+
+`POST /payments/create-preference` — crea el pedido y una Preference en MP. Devuelve `{ orderId, init_point }`. El frontend redirige al `init_point` para que el usuario pague en el sitio de Mercado Pago.
+
+`POST /payments/webhook` — recibe notificaciones asíncronas de MP y actualiza el estado del pedido.
+
+`POST /payments/confirm/:orderId` — confirma el pedido cuando el usuario vuelve de MP (vía redirect de `back_url`).
+
 ### Dashboard
 | Método | Ruta | Acceso |
 |---|---|---|
@@ -154,14 +196,17 @@ Devuelve en una sola llamada: totales generales, pedidos por estado, libros con 
 Sistema completo y funcional. Backend y frontend implementados al 100%.
 
 **Frontend (Angular 17+)**
-- Catálogo público con búsqueda, filtros por categoría/tipo y paginación
-- Detalle de libro con carrito y favoritos
+- Home comercial con carruseles animados (Destacados, Novedades, Más vendidos)
+- Búsqueda global desde el hero del home
+- Catálogo público con búsqueda, filtros por categoría/tipo/condición/precio y tira A-Z
+- Detalle de libro con zoom de portada, cuotas, WhatsApp y copiar link
 - Login, registro y perfil de usuario con cambio de contraseña
-- Carrito persistente y checkout con confirmación de pedido
+- Carrito persistente con checkout integrado con Mercado Pago
+- Pago con tarjeta/efectivo, hasta 12 cuotas sin interés
+- Páginas de éxito y error tras el pago con número de pedido
 - Historial de pedidos con detalle expandible
-- Panel administrativo completo: libros, categorías, pedidos y dashboard
+- Panel administrativo completo: libros, categorías, pedidos, usuarios y dashboard
 - Importación de libros por ISBN con previsualización
-- Alta manual de libros sin ISBN
 - Interceptor JWT automático + interceptor de errores HTTP con Snackbar
 - Responsive: colapso de grids en viewports menores a 1024px / 768px
 
@@ -170,4 +215,22 @@ Sistema completo y funcional. Backend y frontend implementados al 100%.
 - CRUD completo de libros, categorías, usuarios, favoritos, carrito y pedidos
 - Transacciones SQL para pedidos (stock, movimientos, carrito)
 - Integración con Open Library y Google Books por ISBN
+- Integración con Mercado Pago Checkout Pro (preferencias, webhooks)
 - Dashboard con métricas en tiempo real (`Promise.all` para queries paralelas)
+- Filtros avanzados de catálogo: búsqueda, categoría, precio, condición, inicial, ordenamiento
+
+---
+
+## Notas para el evaluador
+
+### Credenciales de Mercado Pago
+
+La integración de pagos requiere un Access Token y una Public Key de Mercado Pago. Estas credenciales **no están en el repositorio** por razones de seguridad. Se entregan por separado al momento de la evaluación para configurar en el `.env` del backend.
+
+### Base de datos
+
+La base de datos incluye datos reales importados de Buscalibre Argentina (más de 6.700 libros con portadas). El volcado SQL se entrega por separado.
+
+### Funcionalidad de pagos en demo
+
+La integración de Mercado Pago funciona en el entorno de pruebas con credenciales provistas. Los pagos procesados en modo demo **no generan cargos reales**. La pantalla de pago muestra un aviso indicando que es un entorno de prueba.
